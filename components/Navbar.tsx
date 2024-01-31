@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-
+import logo from "/mit-wpu_logo.png";
 const Navbar = () => {
   return (
     <nav className="w-full h-[80px] bg-slate-900">

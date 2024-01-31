@@ -1,15 +1,15 @@
 import { prismaClient } from "@/lib/prismaClient";
 
-export const getRecords = async () => {
+export const getVisitors = async () => {
   try {
-    const records = await prismaClient.record.findMany({
+    const visitors = await prismaClient.visitor.findMany({
       orderBy: {
         createdAt: "desc",
       },
     });
-    return records;
+    return visitors;
   } catch (error) {
-    console.log("GET_RECORDS");
+    console.log("GET_VISITORS");
     console.log("Error:" + error);
   }
 };
