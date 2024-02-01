@@ -39,7 +39,7 @@ const EntryForm = () => {
     setLoading(true);
 
     try {
-      await axios.post(`/api/record`, data, { cache: "force-cache" });
+      await axios.post(`/api/record`, data);
       toast({
         description: "Entry done!",
         variant: "success",
