@@ -39,12 +39,14 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col items-center justify-center">
       <Navbar />
-      <div className="w-full h-screen flex flex-col items-center px-4">
-        <EntryForm />
+      <div className="w-full h-screen p-4 gap-4 flex flex-col lg:w-[60%]">
+        <div>
+          <EntryForm />
+        </div>
 
-        <div className="w-full lg:w-[60%] xl:w-[60%] h-full">
+        <div>
           {loading && (
             <div className="w-full h-auto md:p-3 mt-4 flex items-center justify-center">
               <ClipLoader

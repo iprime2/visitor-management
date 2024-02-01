@@ -67,7 +67,7 @@ const EntryForm = () => {
   };
 
   return (
-    <div className="mx-auto w-full lg:w-[60%] xl:w-[60%] bg-white rounded-2xl py-2 px-2">
+    <div className="">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
