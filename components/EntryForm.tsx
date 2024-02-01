@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { FC, useState } from "react";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
@@ -26,7 +26,11 @@ const formSchema = z.object({
 
 type UserFormValues = z.infer<typeof formSchema>;
 
-const EntryForm = () => {
+type EntryFormPropsType = {
+  fetchData: () => void;
+};
+
+const EntryForm: FC<EntryFormPropsType> = ({ fetchData }) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -45,6 +49,7 @@ const EntryForm = () => {
         variant: "success",
       });
       router.refresh();
+      fetchData();
       // window.location.reload();
     } catch (error: any) {
       console.log(error);

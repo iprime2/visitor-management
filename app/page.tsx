@@ -1,3 +1,4 @@
+"use client";
 import { DataTable } from "@/components/DataTable";
 import EntryForm from "@/components/EntryForm";
 import Navbar from "@/components/Navbar";
@@ -9,44 +10,41 @@ import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
 import { getVisitors } from "@/actions/getVisitors";
 
-export default async function Home() {
-  // const [records, setRecords] = useState(null);
-  // const [loading, setLoading] = useState(false);
-  const loading = false;
+export default function Home() {
+  const [records, setRecords] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const records = await getVisitors();
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
-
-  // const fetchData = async () => {
-  //   try {
-  //     const res = await axios.get(`/api/record`);
-  //     setRecords(res.data);
-  //     toast({
-  //       description: "Data Fetched",
-  //       variant: "success",
-  //     });
-  //   } catch (error: any) {
-  //     setLoading(false);
-  //     console.log(error);
-  //     toast({
-  //       description: "Something went wrong!!",
-  //       variant: "destructive",
-  //       action: <ToastAction altText="Try again">Try again</ToastAction>,
-  //     });
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  const fetchData = async () => {
+    try {
+      const res = await axios.get(`/api/record`);
+      setRecords(res.data);
+      toast({
+        description: "Data Fetched",
+        variant: "success",
+      });
+    } catch (error: any) {
+      setLoading(false);
+      console.log(error);
+      toast({
+        description: "Something went wrong!!",
+        variant: "destructive",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center">
       <Navbar />
       <div className="w-full h-screen p-4 gap-4 flex flex-col lg:w-[60%]">
         <div>
-          <EntryForm />
+          <EntryForm fetchData={fetchData} />
         </div>
 
         <div>
