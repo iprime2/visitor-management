@@ -7,6 +7,7 @@ export const getVisitors = async () => {
         createdAt: "desc",
       },
     });
+
     return visitors;
   } catch (error) {
     console.log("GET_VISITORS");

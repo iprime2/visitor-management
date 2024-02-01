@@ -1,4 +1,3 @@
-"use client";
 import { DataTable } from "@/components/DataTable";
 import EntryForm from "@/components/EntryForm";
 import Navbar from "@/components/Navbar";
@@ -8,35 +7,39 @@ import { toast } from "@/components/ui/use-toast";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
+import { getVisitors } from "@/actions/getVisitors";
 
-export default function Home() {
-  const [records, setRecords] = useState(null);
-  const [loading, setLoading] = useState(true);
+export default async function Home() {
+  // const [records, setRecords] = useState(null);
+  // const [loading, setLoading] = useState(false);
+  const loading = false;
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const records = await getVisitors();
 
-  const fetchData = async () => {
-    try {
-      const res = await axios.get(`/api/record`);
-      setRecords(res.data);
-      toast({
-        description: "Data Fetched",
-        variant: "success",
-      });
-    } catch (error: any) {
-      setLoading(false);
-      console.log(error);
-      toast({
-        description: "Something went wrong!!",
-        variant: "destructive",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
+
+  // const fetchData = async () => {
+  //   try {
+  //     const res = await axios.get(`/api/record`);
+  //     setRecords(res.data);
+  //     toast({
+  //       description: "Data Fetched",
+  //       variant: "success",
+  //     });
+  //   } catch (error: any) {
+  //     setLoading(false);
+  //     console.log(error);
+  //     toast({
+  //       description: "Something went wrong!!",
+  //       variant: "destructive",
+  //       action: <ToastAction altText="Try again">Try again</ToastAction>,
+  //     });
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <div className="flex flex-col items-center justify-center">
