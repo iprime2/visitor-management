@@ -1,18 +1,17 @@
 "use client";
-import { DataTable } from "@/components/DataTable";
-import EntryForm from "@/components/EntryForm";
-import Navbar from "@/components/Navbar";
-import { columns } from "@/components/columns";
-import { ToastAction } from "@/components/ui/toast";
-import { toast } from "@/components/ui/use-toast";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
+import { DataTable } from "@/components/DataTable";
+import EntryForm from "@/components/EntryForm";
+import { columns } from "@/components/columns";
+import { ToastAction } from "@/components/ui/toast";
+import { toast } from "@/components/ui/use-toast";
 import { getVisitors } from "@/actions/getVisitors";
 
 export default function Home() {
   const [records, setRecords] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchData();
@@ -20,7 +19,7 @@ export default function Home() {
 
   const fetchData = async () => {
     try {
-      const res = await axios.get(`/api/record`);
+      const res = await axios.get(`/api/visitors`);
       setRecords(res.data);
       toast({
         description: "Data Fetched",
@@ -41,7 +40,6 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <Navbar />
       <div className="w-full h-screen p-4 gap-4 flex flex-col lg:w-[60%]">
         <div>
           <EntryForm fetchData={fetchData} />

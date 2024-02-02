@@ -43,7 +43,7 @@ const EntryForm: FC<EntryFormPropsType> = ({ fetchData }) => {
     setLoading(true);
 
     try {
-      await axios.post(`/api/record`, data);
+      await axios.post(`/api/visitors`, data);
       toast({
         description: "Entry done!",
         variant: "success",
