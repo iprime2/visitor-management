@@ -8,6 +8,7 @@ import { columns } from "@/components/columns";
 import { ToastAction } from "@/components/ui/toast";
 import { toast } from "@/components/ui/use-toast";
 import { getVisitors } from "@/actions/getVisitors";
+import BodyWrapper from "@/components/BodyWrapper";
 
 export default function Home() {
   const [records, setRecords] = useState(null);
@@ -39,32 +40,25 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <div className="w-full h-screen p-4 gap-4 flex flex-col lg:w-[60%]">
-        <div>
-          <EntryForm fetchData={fetchData} />
-        </div>
-
-        <div>
-          {loading && (
-            <div className="w-full h-auto md:p-3 mt-4 flex items-center justify-center">
-              <ClipLoader
-                loading={loading}
-                size={200}
-                aria-label="Loading Spinner"
-                data-testid="loader"
-              />
-            </div>
-          )}
-          {records && (
-            <DataTable
-              columns={columns}
-              data={records}
-              searchKey="visitorName"
-            />
-          )}
-        </div>
+    <BodyWrapper>
+      <div>
+        <EntryForm fetchData={fetchData} />
       </div>
-    </div>
+      <div>
+        {loading && (
+          <div className="w-full h-auto md:p-3 mt-4 flex items-center justify-center">
+            <ClipLoader
+              loading={loading}
+              size={200}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+          </div>
+        )}
+        {records && (
+          <DataTable columns={columns} data={records} searchKey="visitorName" />
+        )}
+      </div>
+    </BodyWrapper>
   );
 }

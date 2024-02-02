@@ -25,11 +25,6 @@ export function DatePickerWithRange({
   date,
   setDate,
 }: DatePickerWithRangeProps) {
-  // const [date, setDate] = React.useState<DateRange | undefined>({
-  //   from: new Date(2022, 0, 20),
-  //   to: addDays(new Date(2022, 0, 20), 20),
-  // });
-
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover>
@@ -38,7 +33,7 @@ export function DatePickerWithRange({
             id="date"
             variant={"outline"}
             className={cn(
-              "w-[300px] justify-start text-left font-normal",
+              "sm:w-full md:w-[220px] lg:w-[360px] justify-start text-left font-normal",
               !date && "text-muted-foreground"
             )}
           >
