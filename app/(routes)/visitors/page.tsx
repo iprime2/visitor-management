@@ -20,9 +20,16 @@ const Records = () => {
   });
 
   const fetchData = async () => {
+    const fromDate = startOfDay(date.from).toISOString();
+    const toDate = date.to && endOfDay(date.to).toISOString();
+
+    const finalDate = JSON.stringify({
+      fromDate,
+      toDate,
+    });
     setLoading(true);
     try {
-      const res = await axios.post(`/api/visitors/date`, date);
+      const res = await axios.post(`/api/visitors/date`, finalDate);
       setVisitors(res.data);
       toast({
         description: "Data Fetched",

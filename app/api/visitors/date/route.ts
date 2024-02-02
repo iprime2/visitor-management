@@ -3,11 +3,9 @@ import { endOfDay, startOfDay } from "date-fns";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-  const { to, from } = await req.json();
+  const { fromDate, toDate } = await req.json();
 
   try {
-    const fromDate = startOfDay(from).toISOString();
-    const toDate = to && endOfDay(to).toISOString();
     const visitors = await prismaClient.visitor.findMany({
       where: {
         createdAt: {
