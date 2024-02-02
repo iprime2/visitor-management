@@ -22,13 +22,6 @@ const Records = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      // const fromDate = startOfDay(date.from).toISOString();
-      // const toDate = date.to && endOfDay(date.to).toISOString();
-      // const finalDate = JSON.stringify({
-      //   fromDate,
-      //   toDate,
-      // });
-
       const res = await axios.post(`/api/visitors/date`, date);
       setVisitors(res.data);
       toast({

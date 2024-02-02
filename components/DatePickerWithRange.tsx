@@ -15,9 +15,9 @@ import {
 } from "@/components/ui/popover";
 
 interface DatePickerWithRangeProps {
-  className: React.HTMLAttributes<HTMLDivElement>;
+  className?: React.HTMLAttributes<HTMLDivElement>;
   date: DateRange | undefined;
-  setDate: DateRange | undefined;
+  setDate: React.Dispatch<React.SetStateAction<DateRange | undefined>>;
 }
 
 export function DatePickerWithRange({
