@@ -15,8 +15,8 @@ export const getVisitors = async () => {
       },
     });
 
-    await redisClient.del("visitorData");
-    await redisClient.set("visitorData", visitors);
+    // await redisClient.del("visitorData");
+    // await redisClient.set("visitorData", visitors);
 
     return visitors;
   } catch (error) {

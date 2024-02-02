@@ -19,8 +19,6 @@ const Records = () => {
     to: addDays(new Date(2024, 0, 20), 20),
   });
 
-  console.log(date);
-
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -30,8 +28,6 @@ const Records = () => {
       //   fromDate,
       //   toDate,
       // });
-
-      // console.log(finalDate);
 
       const res = await axios.post(`/api/visitors/date`, date);
       setVisitors(res.data);
