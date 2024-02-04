@@ -26,11 +26,11 @@ const formSchema = z.object({
 
 type UserFormValues = z.infer<typeof formSchema>;
 
-type EntryFormPropsType = {
+type VisitorsEntryFormPropsType = {
   fetchData: () => void;
 };
 
-const EntryForm: FC<EntryFormPropsType> = ({ fetchData }) => {
+const VisitorsEntryForm: FC<VisitorsEntryFormPropsType> = ({ fetchData }) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -43,7 +43,7 @@ const EntryForm: FC<EntryFormPropsType> = ({ fetchData }) => {
     setLoading(true);
 
     try {
-      await axios.post(`/api/visitors`, data);
+      await axios.post(`/api/visitors/new`, data);
       toast({
         description: "Entry done!",
         variant: "success",
@@ -104,4 +104,4 @@ const EntryForm: FC<EntryFormPropsType> = ({ fetchData }) => {
   );
 };
 
-export default EntryForm;
+export default VisitorsEntryForm;

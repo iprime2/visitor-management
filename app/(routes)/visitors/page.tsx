@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { addDays, endOfDay, startOfDay } from "date-fns";
 import { DateRange } from "react-day-picker";
@@ -12,33 +12,33 @@ import { Button } from "@/components/ui/button";
 import { ToastAction } from "@/components/ui/toast";
 import { toast } from "@/components/ui/use-toast";
 import BodyWrapper from "@/components/BodyWrapper";
+import VisitorsEntryForm from "@/components/VisitorsEntryForm";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const Records = () => {
   const [visitors, setVisitors] = useState();
   const [loading, setLoading] = useState<boolean>(false);
-  const currentDate = new Date();
-  const previousDate = new Date(
-    currentDate.getFullYear(),
-    currentDate.getMonth(),
-    currentDate.getDate() - 2
-  );
 
   const [date, setDate] = React.useState<DateRange | any | undefined>({
-    from: previousDate,
-    to: currentDate,
+    from: new Date(),
+    to: new Date(),
   });
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const fetchData = async () => {
+    setLoading(true);
     const fromDate = startOfDay(date.from).toISOString();
     const toDate = date.to && endOfDay(date.to).toISOString();
 
-    const finalDate = JSON.stringify({
+    const finalDate = {
       fromDate,
       toDate,
-    });
-    setLoading(true);
+    };
     try {
-      const res = await axios.post(`/api/visitors/date`, finalDate);
+      const res = await axios.post(`/api/visitors`, finalDate);
       setVisitors(res.data);
       toast({
         description: "Data Fetched",
@@ -58,8 +58,6 @@ const Records = () => {
   };
 
   const downloadData = () => {
-    console.log("here");
-
     try {
       setLoading(true);
       if (visitors) {
@@ -79,6 +77,10 @@ const Records = () => {
         link.href = url;
         link.download = "visitors.xlsx";
         link.click();
+        toast({
+          description: "File Downloaded",
+          variant: "success",
+        });
       }
     } catch (error) {
       console.error("DOWNLOAD_FILE_ERROR");
@@ -95,13 +97,13 @@ const Records = () => {
 
   return (
     <BodyWrapper>
+      <div>
+        <VisitorsEntryForm fetchData={fetchData} />
+      </div>
       <div className="flex flex-col w-full">
         <p className="md:text-xl lg:text2xl sm:text-md">Select Date</p>
         <div className="flex flex-col md:flex-row gap-4 w-full">
-          <DatePickerWithRange
-            date={date}
-            setDate={setDate}
-          />
+          <DatePickerWithRange date={date} setDate={setDate} />
           <Button className="w-full" onClick={fetchData} disabled={loading}>
             Submit
           </Button>
@@ -111,7 +113,16 @@ const Records = () => {
         </div>
       </div>
       <div className="w-full">
-        {visitors ? (
+        {loading ? (
+          <div className="w-full h-auto md:p-3 mt-4 flex items-center justify-center">
+            <ClipLoader
+              loading={loading}
+              size={200}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+          </div>
+        ) : visitors ? (
           <DataTable
             columns={columns}
             data={visitors}
