@@ -1,9 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { addDays, endOfDay, startOfDay } from "date-fns";
+import {  endOfDay, startOfDay } from "date-fns";
 import { DateRange } from "react-day-picker";
-import * as XLSX from "xlsx";
 
 import { DataTable } from "@/components/DataTable";
 import { DatePickerWithRange } from "@/components/DatePickerWithRange";
@@ -14,6 +13,7 @@ import { toast } from "@/components/ui/use-toast";
 import BodyWrapper from "@/components/BodyWrapper";
 import VisitorsEntryForm from "@/components/VisitorsEntryForm";
 import ClipLoader from "react-spinners/ClipLoader";
+import downloadData from "@/lib/DownloadData";
 
 const Records = () => {
   const [visitors, setVisitors] = useState();
@@ -57,44 +57,6 @@ const Records = () => {
     }
   };
 
-  const downloadData = () => {
-    try {
-      setLoading(true);
-      if (visitors) {
-        // Convert data to Excel file
-        const workbook = XLSX.utils.book_new();
-        const worksheet = XLSX.utils.json_to_sheet(visitors);
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Visitors");
-        const excelBuffer = XLSX.write(workbook, {
-          bookType: "xlsx",
-          type: "array",
-        });
-        const data = new Blob([excelBuffer], {
-          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        });
-        const url = URL.createObjectURL(data);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "visitors.xlsx";
-        link.click();
-        toast({
-          description: "File Downloaded",
-          variant: "success",
-        });
-      }
-    } catch (error) {
-      console.error("DOWNLOAD_FILE_ERROR");
-      console.error(error);
-      toast({
-        description: "Something went wrong!!",
-        variant: "destructive",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <BodyWrapper>
       <div>
@@ -107,7 +69,11 @@ const Records = () => {
           <Button className="w-full" onClick={fetchData} disabled={loading}>
             Submit
           </Button>
-          <Button className="w-full" onClick={downloadData} disabled={loading}>
+          <Button
+            className="w-full"
+            onClick={() => downloadData(setLoading, "visitors", visitors)}
+            disabled={loading}
+          >
             Download
           </Button>
         </div>
