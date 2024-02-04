@@ -3,13 +3,11 @@ import * as XLSX from "xlsx";
 import { toast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 
-type DownloadDatatype = {
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  type: string;
-  data: any | undefined | null;
-};
-
-export default function downloadData(setLoading, type, data): DownloadDatatype {
+export default function downloadData(
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  type: string,
+  data: any | undefined | null = null
+) {
   try {
     setLoading(true);
     if (data) {
@@ -37,11 +35,10 @@ export default function downloadData(setLoading, type, data): DownloadDatatype {
   } catch (error) {
     console.error("DOWNLOAD_FILE_ERROR");
     console.error(error);
-    // toast({
-    //   description: "Something went wrong!!",
-    //   variant: "destructive",
-    //   action: <ToastAction altText="Try again">Try again</ToastAction>,
-    // });
+    toast({
+      description: "Something went wrong!!",
+      variant: "destructive",
+    });
   } finally {
     setLoading(false);
   }

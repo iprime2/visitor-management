@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {  endOfDay, startOfDay } from "date-fns";
+import { endOfDay, startOfDay } from "date-fns";
 import { DateRange } from "react-day-picker";
 
 import { DataTable } from "@/components/DataTable";
