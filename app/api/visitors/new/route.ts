@@ -1,12 +1,12 @@
 import { prismaClient } from "@/lib/prismaClient";
 import { NextResponse } from "next/server";
 
-export async function POST(req: Request, res: Response) {
+export async function POST(req: Request) {
   try {
     const { name } = await req.json();
 
     if (!name) {
-      return new Response("NAME MISSING", { status: 400 });
+      return new Response("NAME IS MISSING", { status: 400 });
     }
 
     const visitor = await prismaClient.visitor.create({

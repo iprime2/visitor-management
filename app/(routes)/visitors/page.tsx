@@ -7,7 +7,7 @@ import * as XLSX from "xlsx";
 
 import { DataTable } from "@/components/DataTable";
 import { DatePickerWithRange } from "@/components/DatePickerWithRange";
-import { columns } from "@/components/columns";
+import { visitorColumns } from "@/components/visitorsColumns";
 import { Button } from "@/components/ui/button";
 import { ToastAction } from "@/components/ui/toast";
 import { toast } from "@/components/ui/use-toast";
@@ -124,7 +124,7 @@ const Records = () => {
           </div>
         ) : visitors ? (
           <DataTable
-            columns={columns}
+            columns={visitorColumns}
             data={visitors}
             searchKey="visitorName"
           />

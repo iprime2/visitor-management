@@ -21,36 +21,43 @@ import { ToastAction } from "./ui/toast";
 import { toast } from "./ui/use-toast";
 
 const formSchema = z.object({
-  name: z.string().min(1, { message: "Name must not be empty" }),
+  prn: z.string().min(1, { message: "Name must not be empty" }),
 });
 
 type UserFormValues = z.infer<typeof formSchema>;
 
-type VisitorsEntryFormPropsType = {
+type RecordsEntryFormPropsType = {
   fetchData: () => void;
 };
 
-const VisitorsEntryForm: FC<VisitorsEntryFormPropsType> = ({ fetchData }) => {
+const RecordsEntryForm: FC<RecordsEntryFormPropsType> = ({ fetchData }) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const form = useForm<UserFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: { name: "" },
+    defaultValues: { prn: "" },
   });
 
   const onSubmit = async (data: UserFormValues) => {
     setLoading(true);
 
     try {
-      await axios.post(`/api/visitors/new`, data);
-      toast({
-        description: "Entry done!",
-        variant: "success",
-      });
+      const res = await axios.post(`/api/records/new`, data);
       router.refresh();
+      if (res.status === 200) {
+        toast({
+          description: "Entry Out done!",
+          variant: "success",
+        });
+      }
+      if (res.status === 201) {
+        toast({
+          description: "Entry In done!",
+          variant: "success",
+        });
+      }
       fetchData();
-      // window.location.reload();
     } catch (error: any) {
       console.log(error);
       if (error.response.data) {
@@ -81,14 +88,14 @@ const VisitorsEntryForm: FC<VisitorsEntryFormPropsType> = ({ fetchData }) => {
         >
           <FormField
             control={form.control}
-            name="name"
+            name="prn"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Visitor Name</FormLabel>
+                <FormLabel>PRN No.</FormLabel>
                 <FormControl>
                   <Input
                     disabled={loading}
-                    placeholder="Visitor Name"
+                    placeholder="Enter PRN Number"
                     {...field}
                   />
                 </FormControl>
@@ -105,4 +112,4 @@ const VisitorsEntryForm: FC<VisitorsEntryFormPropsType> = ({ fetchData }) => {
   );
 };
 
-export default VisitorsEntryForm;
+export default RecordsEntryForm;

@@ -1,18 +1,10 @@
 "use client";
 
-import { format, formatDistanceToNow } from "date-fns";
+import { format } from "date-fns";
 import { ColumnDef } from "@tanstack/react-table";
-import { cn } from "@/lib/utils";
+import { Visitor } from "@prisma/client";
 
-export type Records = {
-  id: string;
-  visitorName: string;
-  visitorId: string;
-  createdAt: Date;
-  updatedAt: Date;
-};
-
-export const columns: ColumnDef<Records>[] = [
+export const visitorColumns: ColumnDef<Visitor>[] = [
   {
     accessorKey: "visitorId",
     header: "Visitor Id",

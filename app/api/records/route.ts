@@ -5,7 +5,7 @@ export async function POST(req: Request) {
   try {
     const { fromDate, toDate } = await req.json();
 
-    const visitors = await prismaClient.visitor.findMany({
+    const records = await prismaClient.record.findMany({
       where: {
         createdAt: {
           gte: new Date(fromDate),
@@ -17,13 +17,13 @@ export async function POST(req: Request) {
       },
     });
 
-    if (!visitors) {
-      return new Response("Visitor Not Created", { status: 500 });
+    if (!records) {
+      return new Response("record Not Created", { status: 500 });
     }
 
-    return NextResponse.json(visitors);
+    return NextResponse.json(records);
   } catch (error) {
-    console.log("[VISITORS_POST_CREATE_ERROR]");
+    console.log("[RECORDS_POST_CREATE_ERROR]");
     console.error("Error:", error);
   }
 }

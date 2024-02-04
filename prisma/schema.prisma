@@ -11,9 +11,33 @@ datasource db {
 }
 
 model Visitor {
-  id          String    @id @default(uuid())
-  visitorId   Int       @default(autoincrement())
+  id          String   @id @default(uuid())
+  visitorId   Int      @default(autoincrement())
   visitorName String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model StudentAndEmployee {
+  id        String   @id @default(uuid())
+  name      String
+  prn       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  record Record[] @relation("recordRef")
+}
+
+model Record {
+  id                   String             @id @default(uuid())
+  StudentAndEmployeeId String
+  student              StudentAndEmployee @relation("recordRef", fields: [StudentAndEmployeeId], references: [id])
+  visitorPrn           String
+  visitorName          String
+  in                   Boolean            @default(true)
+  out                  Boolean            @default(false)
+  inTime               DateTime           @default(now())
+  outTime              DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
 }
