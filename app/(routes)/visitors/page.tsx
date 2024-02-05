@@ -3,6 +3,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { endOfDay, startOfDay } from "date-fns";
 import { DateRange } from "react-day-picker";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 
 import { DataTable } from "@/components/DataTable";
 import { DatePickerWithRange } from "@/components/DatePickerWithRange";
@@ -11,13 +14,21 @@ import { Button } from "@/components/ui/button";
 import { ToastAction } from "@/components/ui/toast";
 import { toast } from "@/components/ui/use-toast";
 import BodyWrapper from "@/components/BodyWrapper";
-import VisitorsEntryForm from "@/components/VisitorsEntryForm";
 import ClipLoader from "react-spinners/ClipLoader";
 import downloadData from "@/lib/DownloadData";
+import { useForm } from "react-hook-form";
+import EntryForm from "@/components/Form";
+import { VisitorsFormValues, visitorFormSchema } from "@/lib/formSchema";
 
 const Records = () => {
   const [visitors, setVisitors] = useState();
   const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
+
+  const form = useForm<VisitorsFormValues>({
+    resolver: zodResolver(visitorFormSchema),
+    defaultValues: { name: "" },
+  });
 
   const [date, setDate] = React.useState<DateRange | any | undefined>({
     from: new Date(),
@@ -57,10 +68,50 @@ const Records = () => {
     }
   };
 
+  const onSubmit = async (data: VisitorsFormValues) => {
+    setLoading(true);
+
+    try {
+      await axios.post(`/api/visitors/new`, data);
+      toast({
+        description: "Entry done!",
+        variant: "success",
+      });
+      router.refresh();
+      fetchData();
+      // window.location.reload();
+    } catch (error: any) {
+      console.log(error);
+      if (error.response.data) {
+        const errMessage = error?.response?.data;
+        toast({
+          description: errMessage,
+          variant: "destructive",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      } else {
+        toast({
+          description: "Something went wrong!!",
+          variant: "destructive",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <BodyWrapper>
       <div>
-        <VisitorsEntryForm fetchData={fetchData} />
+        <EntryForm
+          formName={"name"}
+          formLabel={"Visitor Name"}
+          formPlaceholder={"Enter the visitor name"}
+          onSubmit={onSubmit}
+          form={form}
+          loading={loading}
+        />
       </div>
       <div className="flex flex-col w-full">
         <p className="md:text-xl lg:text2xl sm:text-md">Select Date</p>
