@@ -38,10 +38,10 @@ export const visitorColumns: ColumnDef<Visitors>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: "Date",
+    header: "Date-Time",
     cell: ({ row }) => (
       <div className="flex">
-        {row.original.createdAt ? format(row.original.createdAt, "PP") : "NAN"}
+        {row.original.createdAt ? format(row.original.createdAt, "PPp") : "NAN"}
       </div>
     ),
   },
