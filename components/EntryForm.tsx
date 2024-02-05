@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -42,6 +42,7 @@ const attendedByOptions = ["Mr. Hairsh", "Dean", "Vice Chairman"];
 const EntryForm = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
+  const inputRef = useRef<HTMLInputElement>(null);
   const form = useForm<VisitorsFormValues>({
     resolver: zodResolver(visitorFormSchema),
     defaultValues: {
@@ -51,6 +52,12 @@ const EntryForm = () => {
       attendedBy: "",
     },
   });
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   const onSubmit = async (data: VisitorsFormValues) => {
     setLoading(true);
@@ -81,12 +88,20 @@ const EntryForm = () => {
       }
     } finally {
       setLoading(false);
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }, 1000);
     }
   };
 
   const resetForm = () => {
     form.reset();
     form.setValue("attendedBy", "");
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
   };
 
   return (
@@ -104,9 +119,11 @@ const EntryForm = () => {
                 <FormLabel>Visitor PRN</FormLabel>
                 <FormControl>
                   <Input
+                    className="focus"
                     disabled={loading}
                     placeholder={"Enter PRN number"}
                     {...field}
+                    ref={inputRef}
                   />
                 </FormControl>
                 <FormMessage />
