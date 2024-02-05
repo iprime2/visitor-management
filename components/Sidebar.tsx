@@ -5,7 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Montserrat } from "next/font/google";
 
-import { LayoutDashboardIcon, ArrowLeftRight, User2 } from "lucide-react";
+import {
+  LayoutDashboardIcon,
+  User2,
+  FileSpreadsheetIcon,
+  ArrowLeftRightIcon,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const montserrat = Montserrat({ weight: "600", subsets: ["latin"] });
@@ -18,29 +23,29 @@ const routes = [
     color: "text-sky-500",
   },
   {
-    label: "InOut",
-    href: "/inout",
-    icon: ArrowLeftRight,
-    color: "text-violet-500",
-  },
-  {
     label: "Visitors",
     href: "/visitors",
-    icon: User2,
+    icon: ArrowLeftRightIcon,
     color: "text-teal-500",
   },
-  //   {
-  //     label: "Settings",
-  //     href: "/admin/settings",
-  //     icon: SettingsIcon,
-  //     color: "text-teal-500",
-  //   },
-  //   {
-  //     label: "Logout",
-  //     href: "/logout",
-  //     icon: LogOutIcon,
-  //     color: "text-gray-700",
-  //   },
+  {
+    label: "Reports",
+    href: "/reports",
+    icon: FileSpreadsheetIcon,
+    color: "text-violet-500",
+  },
+  // {
+  //   label: "Settings",
+  //   href: "/admin/settings",
+  //   icon: SettingsIcon,
+  //   color: "text-teal-500",
+  // },
+  // {
+  //   label: "Logout",
+  //   href: "/logout",
+  //   icon: LogOutIcon,
+  //   color: "text-gray-700",
+  // },
 ];
 const Sidebar = () => {
   const pathName = usePathname();

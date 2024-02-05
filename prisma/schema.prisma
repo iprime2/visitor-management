@@ -10,34 +10,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Visitor {
-  id          String   @id @default(uuid())
-  visitorId   Int      @default(autoincrement())
-  visitorName String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model StudentAndEmployee {
+model Data {
   id        String   @id @default(uuid())
   name      String
   prn       String
+  mobile    String
+  type      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  record Record[] @relation("recordRef")
+  record Visitors[] @relation("recordRef")
 }
 
-model Record {
-  id                   String             @id @default(uuid())
-  StudentAndEmployeeId String
-  student              StudentAndEmployee @relation("recordRef", fields: [StudentAndEmployeeId], references: [id])
-  visitorPrn           String
+model Visitors {
+  id                   String              @id @unique @default(uuid())
+  visitorId            Int                 @unique @default(autoincrement())
+  dataId               String?
+  student              Data? @relation("recordRef", fields: [dataId], references: [id])
   visitorName          String
-  in                   Boolean            @default(true)
-  out                  Boolean            @default(false)
-  inTime               DateTime           @default(now())
-  outTime              DateTime?
-  createdAt            DateTime           @default(now())
-  updatedAt            DateTime           @updatedAt
+  visitorPrn           String?
+  mobile               String
+  type                 String
+  attendedBy           String
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
 }

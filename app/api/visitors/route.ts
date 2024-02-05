@@ -3,25 +3,55 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { fromDate, toDate } = await req.json();
+    const { visitorPrn, visitorName, mobile, attendedBy } = await req.json();
 
-    const visitors = await prismaClient.visitor.findMany({
-      where: {
-        createdAt: {
-          gte: new Date(fromDate),
-          lte: new Date(toDate),
+    if (visitorPrn) {
+      const data = await prismaClient.data.findFirst({
+        where: {
+          prn: visitorPrn,
         },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+      });
 
-    if (!visitors) {
-      return new Response("Visitor Not Created", { status: 500 });
+      if (!data) {
+        return new Response("PRN NOT FOUND", { status: 404 });
+      }
+
+      const visitor = await prismaClient.visitors.create({
+        data: {
+          dataId: data.id,
+          visitorPrn: data.prn,
+          visitorName: data.name,
+          mobile: data.mobile,
+          type: data.type,
+          attendedBy,
+        },
+      });
+
+      return NextResponse.json(visitor);
+    } else {
+      if (!visitorName) {
+        return new Response("NAME IS MISSING", { status: 400 });
+      }
+
+      if (!mobile) {
+        return new Response("MOBILE IS MISSING", { status: 400 });
+      }
+
+      if (!attendedBy) {
+        return new Response("ATTENDED BY IS MISSING", { status: 400 });
+      }
+
+      const visitor = await prismaClient.visitors.create({
+        data: {
+          visitorName,
+          mobile,
+          type: "visitor",
+          attendedBy,
+        },
+      });
+
+      return NextResponse.json(visitor);
     }
-
-    return NextResponse.json(visitors);
   } catch (error) {
     console.log("[VISITORS_POST_CREATE_ERROR]");
     console.error("Error:", error);

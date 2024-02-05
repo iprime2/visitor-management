@@ -2,16 +2,39 @@
 
 import { format } from "date-fns";
 import { ColumnDef } from "@tanstack/react-table";
-import { Visitor } from "@prisma/client";
+import { Visitors } from "@prisma/client";
 
-export const visitorColumns: ColumnDef<Visitor>[] = [
+export const visitorColumns: ColumnDef<Visitors>[] = [
   {
     accessorKey: "visitorId",
-    header: "Visitor Id",
+    header: "S.No",
+  },
+  {
+    accessorKey: "visitorPrn",
+    header: "PRN",
+    cell: ({ row }) => (
+      <div className="flex">
+        {row.original.visitorPrn
+          ? row.original.visitorPrn
+          : `VCS${row.original.visitorId}`}
+      </div>
+    ),
   },
   {
     accessorKey: "visitorName",
-    header: "Visitor Name",
+    header: "Name",
+  },
+  {
+    accessorKey: "mobile",
+    header: "Contact No.",
+  },
+  {
+    accessorKey: "attendedBy",
+    header: "Attended By",
+  },
+  {
+    accessorKey: "type",
+    header: "Category",
   },
   {
     accessorKey: "createdAt",
