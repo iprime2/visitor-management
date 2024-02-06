@@ -1,12 +1,19 @@
-"use client";
+import { getAttendees } from "@/actions/getattendee";
 import BodyWrapper from "@/components/BodyWrapper";
 import EntryForm from "@/components/EntryForm";
 
-const Records = () => {
+type attendeeType = {
+  id: string;
+  name: string;
+};
+
+const Records = async () => {
+  const attendees: attendeeType[] | null | undefined = await getAttendees();
+
   return (
     <BodyWrapper>
       <div>
-        <EntryForm />
+        <EntryForm attendees={attendees} />
       </div>
     </BodyWrapper>
   );

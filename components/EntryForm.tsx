@@ -27,22 +27,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useFeedbackModal } from "@/hooks/useFeedbackModal";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const visitorFormSchema = z.object({
   visitorPrn: z.string(),
   visitorName: z.string(),
   mobile: z.string(),
   attendedBy: z.string(),
+  query: z.string(),
 });
 
 type VisitorsFormValues = z.infer<typeof visitorFormSchema>;
 
-const attendedByOptions = ["Mr. Hairsh", "Dean", "Vice Chairman"];
+type EntryFormPropsType = {
+  attendees: { id: string; name: string }[] | null | undefined;
+};
 
-const EntryForm = () => {
+const EntryForm: FC<EntryFormPropsType> = ({ attendees }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
+  const feedbackModal = useFeedbackModal();
+
   const form = useForm<VisitorsFormValues>({
     resolver: zodResolver(visitorFormSchema),
     defaultValues: {
@@ -50,6 +57,7 @@ const EntryForm = () => {
       visitorName: "",
       mobile: "",
       attendedBy: "",
+      query: "",
     },
   });
 
@@ -57,17 +65,28 @@ const EntryForm = () => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
+    feedbackModal.onOpen();
   }, []);
 
   const onSubmit = async (data: VisitorsFormValues) => {
     setLoading(true);
 
     try {
-      await axios.post(`/api/visitors`, data);
-      toast({
-        description: "Entry done!",
-        variant: "success",
-      });
+      const response = await axios.post(`/api/visitors`, data);
+      const responseStatusCode = response.status;
+      if (responseStatusCode === 201) {
+        toast({
+          description: "Visitor Entry done!",
+          variant: "success",
+        });
+      }
+      if (responseStatusCode === 200) {
+        toast({
+          description: "Visitor Checked Out!",
+          variant: "success",
+        });
+        feedbackModal.onOpen();
+      }
       router.refresh();
       resetForm();
     } catch (error: any) {
@@ -102,6 +121,7 @@ const EntryForm = () => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
+    feedbackModal.onOpen();
   };
 
   return (
@@ -116,12 +136,12 @@ const EntryForm = () => {
             name="visitorPrn"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Visitor PRN</FormLabel>
+                <FormLabel>Student PRN/ Employee ID</FormLabel>
                 <FormControl>
                   <Input
                     className="focus"
                     disabled={loading}
-                    placeholder={"Enter PRN number"}
+                    placeholder={"Enter Student PRN number / Employee ID"}
                     {...field}
                     ref={inputRef}
                   />
@@ -169,7 +189,7 @@ const EntryForm = () => {
             name="attendedBy"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Attended By</FormLabel>
+                <FormLabel>Whom you want to Meet?</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
@@ -181,9 +201,9 @@ const EntryForm = () => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {attendedByOptions.map((attend) => (
-                      <SelectItem key={attend} value={attend}>
-                        {attend}
+                    {attendees?.map((attendee) => (
+                      <SelectItem key={attendee.id} value={attendee.name}>
+                        {attendee.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -196,8 +216,28 @@ const EntryForm = () => {
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="query"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Query</FormLabel>
+                <FormControl>
+                  <Input
+                    disabled={loading}
+                    placeholder={"Enter Query"}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <div className="w-full flex justify-center gap-2">
-            <Button disabled={loading} className="w-full" type="submit">
+            <Button disabled={loading} className="w-full gap-2" type="submit">
+              {loading && (
+                <ClipLoader className="font-extrabold text-white" size={22} />
+              )}{" "}
               Submit
             </Button>
             <Button
@@ -206,6 +246,9 @@ const EntryForm = () => {
               type="button"
               onClick={() => resetForm()}
             >
+              {loading && (
+                <ClipLoader className="font-extrabold text-white" size={22} />
+              )}{" "}
               Clear Form
             </Button>
           </div>
