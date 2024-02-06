@@ -1,6 +1,6 @@
 "use client";
 import { endOfDay, startOfDay } from "date-fns";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 import axios from "axios";
 
@@ -22,6 +22,10 @@ const Reports = () => {
     to: new Date(),
   });
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const fetchData = async () => {
     setLoading(true);
     const fromDate = startOfDay(date.from).toISOString();
@@ -32,7 +36,7 @@ const Reports = () => {
       toDate,
     };
     try {
-      const res = await axios.post(`/api/visitors/reports`, finalDate);
+      const res = await axios.post(`/api/reports`, finalDate);
       setVisitors(res.data);
       toast({
         description: "Data Fetched",
