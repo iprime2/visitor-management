@@ -2,7 +2,7 @@ import React, { FC } from "react";
 
 type CardPropType = {
   title: string;
-  description: string;
+  description: number;
 };
 const Card: FC<CardPropType> = ({ title, description }) => {
   return (
