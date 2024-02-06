@@ -22,16 +22,44 @@ model Data {
   record Visitors[] @relation("recordRef")
 }
 
+model Attendee {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  visitor Visitors[] @relation("visitorToAttendee")
+}
+
 model Visitors {
-  id                   String              @id @unique @default(uuid())
-  visitorId            Int                 @unique @default(autoincrement())
-  dataId               String?
-  student              Data? @relation("recordRef", fields: [dataId], references: [id])
-  visitorName          String
-  visitorPrn           String?
-  mobile               String
-  type                 String
-  attendedBy           String
-  createdAt            DateTime            @default(now())
-  updatedAt            DateTime            @updatedAt
+  id          String    @id @unique @default(uuid())
+  visitorId   Int       @unique @default(autoincrement())
+  dataId      String?
+  student     Data?     @relation("recordRef", fields: [dataId], references: [id])
+  visitorName String
+  visitorPrn  String?
+  mobile      String
+  type        String
+  attendedBy  String
+  attendeeId  String
+  attendee    Attendee  @relation("visitorToAttendee", fields: [attendeeId], references: [id])
+  query       String
+  in          Boolean   @default(true)
+  out         Boolean   @default(false)
+  inTime      DateTime  @default(now())
+  outTime     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  feedback   Feedback[] @relation("feedbacktovisitor")
+}
+
+model Feedback {
+  id          String    @id @unique @default(uuid())
+  message     String
+  rating      String
+  visitorId   String
+  visitor     Visitors @relation("feedbacktovisitor", fields: [visitorId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
