@@ -52,7 +52,7 @@ const FeedbackModal: FC<FeedbackModalProps> = ({}) => {
     resolver: zodResolver(feedbackFormSchema),
     defaultValues: {
       message: "",
-      rating: "",
+      rating: "Good",
     },
   });
 
@@ -104,7 +104,8 @@ const FeedbackModal: FC<FeedbackModalProps> = ({}) => {
                   >
                     <FormItem className="flex items-center space-x-3">
                       <FormControl>
-                        <RadioGroupItem value="Poor" icon={FrownIcon} />
+                        <RadioGroupItem value="Poor" />
+                        {/* <RadioGroupItem value="Poor" icon={FrownIcon} /> */}
                       </FormControl>
                     </FormItem>
                     {/* <FormItem className="flex items-center space-x-3">
