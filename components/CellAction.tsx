@@ -18,6 +18,7 @@ import { useParams, useRouter } from "next/navigation";
 import { UserColumnType } from "@/app/(routes)/admin/users/components/columns";
 import AlertModal from "./modal/AlertModal";
 import { toast } from "./ui/use-toast";
+import { ToastAction } from "./ui/toast";
 
 interface CellActionProps {
   data: UserColumnType;
@@ -33,7 +34,10 @@ const CellAction: FC<CellActionProps> = ({ data, type }) => {
 
   const onCopy = (id: string) => {
     navigator.clipboard.writeText(id);
-    toast.success(`${type} ID Copied to clipboard`);
+    toast({
+      description: `${type} ID Copied to clipboard`,
+      variant: "success",
+    });
   };
 
   const onDelete = async () => {
@@ -41,9 +45,16 @@ const CellAction: FC<CellActionProps> = ({ data, type }) => {
       setLoading(true);
       await axios.delete(`/api/${type}/${data.id}`);
       router.refresh();
-      toast.success("Department deleted.");
+      toast({
+        description: "Department deleted.",
+        variant: "success",
+      });
     } catch (error: any) {
-      toast.error("Something went wrong!!.");
+      toast({
+        description: "Something went wrong!!",
+        variant: "destructive",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
     } finally {
       setLoading(false);
       setOpen(false);
