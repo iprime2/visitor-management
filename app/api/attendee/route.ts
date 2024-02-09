@@ -1,4 +1,6 @@
 import { prismaClient } from "@/lib/prismaClient";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
@@ -24,6 +26,12 @@ export async function GET(req: Request) {
 export async function PATCH(req: Request) {
   try {
     const { name, visitorUniqueId } = await req.json();
+
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      return new NextResponse("Unauthenticated!!", { status: 401 });
+    }
 
     if (!name || !visitorUniqueId) {
       return new Response("Attendee Name or Visitor unique Id Not Found!", {

@@ -47,7 +47,6 @@ type EntryFormPropsType = {
 const EntryForm: FC<EntryFormPropsType> = ({ attendees }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
-  const inputRef = useRef<HTMLInputElement>(null);
   const feedbackModal = useFeedbackModal();
 
   const form = useForm<VisitorsFormValues>({
@@ -61,18 +60,12 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees }) => {
     },
   });
 
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-    feedbackModal.onOpen();
-  }, []);
-
   const onSubmit = async (data: VisitorsFormValues) => {
     setLoading(true);
 
     try {
       const response = await axios.post(`/api/visitors`, data);
+
       const responseStatusCode = response.status;
       if (responseStatusCode === 201) {
         toast({
@@ -85,7 +78,8 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees }) => {
           description: "Visitor Checked Out!",
           variant: "success",
         });
-        feedbackModal.onOpen();
+        const visitorOutId = response.data.id;
+        feedbackModal.onOpen(visitorOutId);
       }
       router.refresh();
       resetForm();
@@ -107,21 +101,11 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees }) => {
       }
     } finally {
       setLoading(false);
-      setTimeout(() => {
-        if (inputRef.current) {
-          inputRef.current.focus();
-        }
-      }, 1000);
     }
   };
 
   const resetForm = () => {
     form.reset();
-    form.setValue("attendedBy", "");
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-    feedbackModal.onOpen();
   };
 
   return (
@@ -143,7 +127,6 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees }) => {
                     disabled={loading}
                     placeholder={"Enter Student PRN number / Employee ID"}
                     {...field}
-                    ref={inputRef}
                   />
                 </FormControl>
                 <FormMessage />
@@ -235,21 +218,15 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees }) => {
           />
           <div className="w-full flex justify-center gap-2">
             <Button disabled={loading} className="w-full gap-2" type="submit">
-              {loading && (
-                <ClipLoader className="font-extrabold text-white" size={22} />
-              )}{" "}
-              Submit
+              {loading && <ClipLoader color="white" size="20" />} Submit
             </Button>
             <Button
               disabled={loading}
-              className="w-full"
+              className="w-full gap-2"
               type="button"
               onClick={() => resetForm()}
             >
-              {loading && (
-                <ClipLoader className="font-extrabold text-white" size={22} />
-              )}{" "}
-              Clear Form
+              {loading && <ClipLoader color="white" size="20" />} Clear Form
             </Button>
           </div>
         </form>

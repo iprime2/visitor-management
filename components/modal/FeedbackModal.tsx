@@ -56,15 +56,15 @@ const FeedbackModal: FC<FeedbackModalProps> = ({}) => {
     },
   });
 
-  if (!isMounted) {
-    return null;
-  }
+  // if (!isMounted) {
+  //   return null;
+  // }
 
   const onSubmit = async (data: FeedbackFormValues) => {
+    const finalData = { ...data, visitorId: feedbackModal.outVisitorId };
     try {
       setLoading(true);
-      await axios.post("/api/feedback", data);
-
+      const res = await axios.post("/api/feedback", finalData);
       toast({
         title: "Feedback Submitted!",
         variant: "success",
@@ -102,22 +102,26 @@ const FeedbackModal: FC<FeedbackModalProps> = ({}) => {
                     defaultValue={field.value}
                     className="flex space-x-2"
                   >
-                    <FormItem className="flex items-center space-x-3">
+                    <FormItem className="flex items-center justify-center space-x-3">
                       <FormControl>
                         <RadioGroupItem value="Poor" />
-                        {/* <RadioGroupItem value="Poor" icon={FrownIcon} /> */}
                       </FormControl>
+                      <FormLabel className="font-normal items-center justify-center">
+                        Bad
+                      </FormLabel>
                     </FormItem>
-                    {/* <FormItem className="flex items-center space-x-3">
+                    <FormItem className="flex items-center justify-center space-x-3">
                       <FormControl>
-                        <RadioGroupItem value="Good" icon={SmileIcon} />
+                        <RadioGroupItem value="Good" />
                       </FormControl>
+                      <FormLabel className="font-normal">Good</FormLabel>
                     </FormItem>
-                    <FormItem className="flex items-center space-x-3">
+                    <FormItem className="flex items-center justify-center space-x-3">
                       <FormControl>
-                        <RadioGroupItem value="Excellent" icon={LaughIcon} />
+                        <RadioGroupItem value="Excellent" />
                       </FormControl>
-                    </FormItem> */}
+                      <FormLabel className="font-normal">Excellent</FormLabel>
+                    </FormItem>
                   </RadioGroup>
                 </FormControl>
                 <FormMessage />
@@ -142,12 +146,7 @@ const FeedbackModal: FC<FeedbackModalProps> = ({}) => {
             )}
           />
           <Button type="submit" className="w-full gap-3" disabled={loading}>
-            {loading && (
-              <ClipLoader
-                className="font-extrabold text-gray-50 dark:text-slate-800"
-                size={22}
-              />
-            )}
+            {loading && <ClipLoader color="white" size="20" />}
             Submit
           </Button>
         </form>

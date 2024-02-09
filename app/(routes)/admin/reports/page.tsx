@@ -14,7 +14,7 @@ import { DataTable } from "@/components/DataTable";
 import { visitorColumns } from "@/components/visitorsColumns";
 import downloadData from "@/lib/DownloadData";
 
-const Reports = () => {
+const ReportsPage = () => {
   const [visitors, setVisitors] = useState();
   const [loading, setLoading] = useState<boolean>(false);
   const [date, setDate] = React.useState<DateRange | any | undefined>({
@@ -97,4 +97,4 @@ const Reports = () => {
   );
 };
 
-export default Reports;
+export default ReportsPage;

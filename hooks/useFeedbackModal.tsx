@@ -2,12 +2,14 @@ import { create } from "zustand";
 
 interface useFeedbackModalProps {
   isOpen: boolean;
-  onOpen: () => void;
+  outVisitorId: string | null | undefined;
+  onOpen: (outVisitorId: string) => void;
   onClose: () => void;
 }
 
 export const useFeedbackModal = create<useFeedbackModalProps>((set) => ({
   isOpen: false,
-  onOpen: () => set({ isOpen: true }),
+  outVisitorId: null,
+  onOpen: (outVisitorId: string) => set({ isOpen: true, outVisitorId }),
   onClose: () => set({ isOpen: false }),
 }));

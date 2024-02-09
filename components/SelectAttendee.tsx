@@ -64,7 +64,6 @@ const SelectAttendee: FC<SelectAttendeeTypeProps> = ({
   const updateAttendee = useCallback(async (data: string) => {
     setLoading(true);
     try {
-      console.log(data);
       const response = await axios.patch(`/api/attendee`, {
         name: data,
         visitorUniqueId: visitorUniqueId,

@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
-import Provider from "@/providers/Provider";
-import FeedbackModal from "@/components/modal/FeedbackModal";
+import Navbar from "@/components/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,20 +10,18 @@ export const metadata: Metadata = {
   description: "This is a visitor management application",
 };
 
-export default function RootLayout({
+export default function VisitorLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
     <html lang="en">
-      <Provider>
-        <Toaster />
-        <body className={inter.className}>
-          <FeedbackModal />
-          {children}
-        </body>
-      </Provider>
+      <Toaster />
+      <body className={inter.className}>
+        <Navbar type="public" />
+        {children}
+      </body>
     </html>
   );
 }

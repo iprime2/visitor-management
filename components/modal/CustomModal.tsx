@@ -36,9 +36,9 @@ const CustomModal: FC<CustomModalProps> = ({
     }
 
     setShowCustomModal(false);
-    setTimeout(() => {
-      onClose();
-    }, 300);
+    // setTimeout(() => {
+    onClose();
+    // }, 300);
   }, [disabled, onClose]);
 
   if (!isOpen) {

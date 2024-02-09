@@ -7,7 +7,7 @@ type attendeeType = {
   name: string;
 };
 
-const Records = async () => {
+const VisitorsPage = async () => {
   const attendees: attendeeType[] | null | undefined = await getAttendees();
 
   return (
@@ -19,4 +19,4 @@ const Records = async () => {
   );
 };
 
-export default Records;
+export default VisitorsPage;

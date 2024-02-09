@@ -27,6 +27,7 @@ export async function POST(req: Request) {
         });
 
         return NextResponse.json({
+          id: visitorExists.id,
           message: "Visitor Checked Out",
           status: 200,
         });
@@ -54,6 +55,7 @@ export async function POST(req: Request) {
         });
 
         return NextResponse.json({
+          id: visitorExists.id,
           message: "Visitor Checked Out",
           status: 200,
         });

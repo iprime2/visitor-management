@@ -10,6 +10,9 @@ import {
   User2,
   FileSpreadsheetIcon,
   ArrowLeftRightIcon,
+  User2Icon,
+  LogOutIcon,
+  Users2Icon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -18,19 +21,31 @@ const montserrat = Montserrat({ weight: "600", subsets: ["latin"] });
 const routes = [
   {
     label: "Dashboard",
-    href: "/",
+    href: "/admin/dashboard",
     icon: LayoutDashboardIcon,
     color: "text-sky-500",
   },
   {
+    label: "Users",
+    href: "/admin/users",
+    icon: User2Icon,
+    color: "text-red-500",
+  },
+  {
+    label: "Attendees",
+    href: "/admin/attendees",
+    icon: Users2Icon,
+    color: "text-green-500",
+  },
+  {
     label: "Visitors",
-    href: "/visitors",
+    href: "/admin/visitors",
     icon: ArrowLeftRightIcon,
     color: "text-teal-500",
   },
   {
     label: "Reports",
-    href: "/reports",
+    href: "/admin/reports",
     icon: FileSpreadsheetIcon,
     color: "text-violet-500",
   },
@@ -40,12 +55,12 @@ const routes = [
   //   icon: SettingsIcon,
   //   color: "text-teal-500",
   // },
-  // {
-  //   label: "Logout",
-  //   href: "/logout",
-  //   icon: LogOutIcon,
-  //   color: "text-gray-700",
-  // },
+  {
+    label: "Logout",
+    href: "/logout",
+    icon: LogOutIcon,
+    color: "text-gray-700",
+  },
 ];
 const Sidebar = () => {
   const pathName = usePathname();
