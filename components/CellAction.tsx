@@ -50,11 +50,20 @@ const CellAction: FC<CellActionProps> = ({ data, type }) => {
         variant: "success",
       });
     } catch (error: any) {
-      toast({
-        description: "Something went wrong!!",
-        variant: "destructive",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      });
+      if (error.response.data) {
+        const errMessage = error?.response?.data;
+        toast({
+          description: errMessage,
+          variant: "destructive",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      } else {
+        toast({
+          description: "Something went wrong!!",
+          variant: "destructive",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
     } finally {
       setLoading(false);
       setOpen(false);
