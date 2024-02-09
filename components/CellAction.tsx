@@ -5,7 +5,6 @@ import { Copy } from "lucide-react";
 import { Trash } from "lucide-react";
 import { Edit, MoreHorizontal } from "lucide-react";
 import axios from "axios";
-import { toast } from "react-hot-toast";
 
 import {
   DropdownMenu,
@@ -18,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { useParams, useRouter } from "next/navigation";
 import { UserColumnType } from "@/app/(routes)/admin/users/components/columns";
 import AlertModal from "./modal/AlertModal";
+import { toast } from "./ui/use-toast";
 
 interface CellActionProps {
   data: UserColumnType;
