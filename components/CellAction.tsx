@@ -15,13 +15,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { useParams, useRouter } from "next/navigation";
-import { UserColumnType } from "@/app/(routes)/admin/users/components/columns";
 import AlertModal from "./modal/AlertModal";
 import { toast } from "./ui/use-toast";
 import { ToastAction } from "./ui/toast";
+import { UserColumnType } from "@/app/(admin)/admin/users/components/columns";
+import { AttendeeColumnType } from "@/app/(admin)/admin/attendees/components/columns";
 
 interface CellActionProps {
-  data: UserColumnType;
+  data: UserColumnType | AttendeeColumnType;
   type: string;
 }
 
