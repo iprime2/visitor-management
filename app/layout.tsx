@@ -22,7 +22,7 @@ export default function RootLayout({
       <Provider>
         <Toaster />
         <body className={inter.className}>
-          <FeedbackModal />
+          {/* <FeedbackModal /> */}
           {children}
         </body>
       </Provider>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/select";
 import { useFeedbackModal } from "@/hooks/useFeedbackModal";
 import ClipLoader from "react-spinners/ClipLoader";
+import FeedbackModal from "./modal/FeedbackModal";
 
 const visitorFormSchema = z.object({
   visitorPrn: z.string(),

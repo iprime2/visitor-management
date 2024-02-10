@@ -9,6 +9,16 @@ export async function POST(req: Request) {
       return new NextResponse("Some input data is missing!!", { status: 400 });
     }
 
+    const visitorExists = await prismaClient.visitors.findUnique({
+      where: {
+        id: visitorId,
+      },
+    });
+
+    if (!visitorExists) {
+      return new NextResponse("Visitor not found!!", { status: 400 });
+    }
+
     const feedback = await prismaClient.feedback.create({
       data: {
         rating,
@@ -18,5 +28,8 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(feedback, { status: 201 });
-  } catch (error) {}
+  } catch (error) {
+    console.log("[FEEDBACK_POST]", error);
+    return new NextResponse("Internal error", { status: 500 });
+  }
 }

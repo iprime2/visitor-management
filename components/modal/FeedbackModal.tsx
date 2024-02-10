@@ -43,13 +43,12 @@ const FeedbackModal: FC<FeedbackModalProps> = ({}) => {
 
   const feedbackModal = useFeedbackModal();
 
-const [mounted, setMounted] = useState<boolean>(false);
+  const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
     setMounted(true);
-  },[])
+  }, []);
 
-  
   const form = useForm<FeedbackFormValues>({
     resolver: zodResolver(feedbackFormSchema),
     defaultValues: {
@@ -58,8 +57,8 @@ const [mounted, setMounted] = useState<boolean>(false);
     },
   });
 
-  if(!mounted){
-    return null
+  if (!mounted) {
+    return null;
   }
 
   const onSubmit = async (data: FeedbackFormValues) => {

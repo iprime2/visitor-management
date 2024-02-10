@@ -20,8 +20,8 @@ export default function AdminLayout({
   return (
     <html lang="en">
       <Toaster />
+      {/* <FeedbackModal /> */}
       <body className={inter.className}>
-        <FeedbackModal />
         <div className="flex w-full h-screen">
           <div className="hidden h-full md:flex md:w-60 md:flex-col md:fixed md:inset-y-0">
             <Sidebar />
