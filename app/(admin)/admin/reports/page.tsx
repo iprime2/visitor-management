@@ -31,10 +31,6 @@ const ReportsPage = () => {
     fetchData();
   }, []);
 
-  if (!mounted) {
-    return null;
-  }
-
   const fetchData = async () => {
     setLoading(true);
     const fromDate = startOfDay(date.from).toISOString();
@@ -63,6 +59,10 @@ const ReportsPage = () => {
       setLoading(false);
     }
   };
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <BodyWrapper>
