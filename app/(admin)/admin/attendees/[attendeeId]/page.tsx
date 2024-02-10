@@ -1,8 +1,8 @@
 import { FC } from "react";
 
 import Error401 from "@/components/401";
-import { getAttendee } from "@/actions/getAttendee";
 import AttendeeForm from "./components/AttendeeForm";
+import { getAttendee } from "@/actions/getAttendee";
 
 interface AttendeePageProps {
   params: { attendeeId: string };
