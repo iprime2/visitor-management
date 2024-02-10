@@ -48,6 +48,11 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
   const feedbackModal = useFeedbackModal();
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const form = useForm<VisitorsFormValues>({
     resolver: zodResolver(visitorFormSchema),
@@ -59,6 +64,10 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees }) => {
       query: "",
     },
   });
+
+  if (!mounted) {
+    return null;
+  }
 
   const onSubmit = async (data: VisitorsFormValues) => {
     setLoading(true);

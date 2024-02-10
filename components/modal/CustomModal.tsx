@@ -26,6 +26,12 @@ const CustomModal: FC<CustomModalProps> = ({
 }) => {
   const [showCustomModal, setShowCustomModal] = useState(isOpen);
 
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     setShowCustomModal(isOpen);
   }, [isOpen]);
@@ -40,6 +46,10 @@ const CustomModal: FC<CustomModalProps> = ({
     onClose();
     // }, 300);
   }, [disabled, onClose]);
+
+  if (!mounted) {
+    return null;
+  }
 
   if (!isOpen) {
     return null;

@@ -39,15 +39,17 @@ const feedbackFormSchema = z.object({
 export type FeedbackFormValues = z.infer<typeof feedbackFormSchema>;
 
 const FeedbackModal: FC<FeedbackModalProps> = ({}) => {
-  const [isMounted, setIsMounted] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const feedbackModal = useFeedbackModal();
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+const [mounted, setMounted] = useState<boolean>(false);
 
+  useEffect(() => {
+    setMounted(true);
+  },[])
+
+  
   const form = useForm<FeedbackFormValues>({
     resolver: zodResolver(feedbackFormSchema),
     defaultValues: {
@@ -56,9 +58,9 @@ const FeedbackModal: FC<FeedbackModalProps> = ({}) => {
     },
   });
 
-  // if (!isMounted) {
-  //   return null;
-  // }
+  if(!mounted){
+    return null
+  }
 
   const onSubmit = async (data: FeedbackFormValues) => {
     const finalData = { ...data, visitorId: feedbackModal.outVisitorId };

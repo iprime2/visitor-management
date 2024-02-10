@@ -21,10 +21,19 @@ const ReportsPage = () => {
     from: new Date(),
     to: new Date(),
   });
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  if (!mounted) {
+    return null;
+  }
 
   const fetchData = async () => {
     setLoading(true);

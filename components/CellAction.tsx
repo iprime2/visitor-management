@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Copy } from "lucide-react";
 import { Trash } from "lucide-react";
 import { Edit, MoreHorizontal } from "lucide-react";
@@ -32,6 +32,15 @@ const CellAction: FC<CellActionProps> = ({ data, type }) => {
 
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
 
   const onCopy = (id: string) => {
     navigator.clipboard.writeText(id);

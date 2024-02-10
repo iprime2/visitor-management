@@ -15,6 +15,7 @@ import {
   Users2Icon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 const montserrat = Montserrat({ weight: "600", subsets: ["latin"] });
 
@@ -64,6 +65,15 @@ const routes = [
 ];
 const Sidebar = () => {
   const pathName = usePathname();
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <div className="space-y-4 py-4 flex flex-col w-full h-full bg-[#111827] text-white">
