@@ -1,4 +1,4 @@
-import { getAttendees } from "@/actions/getattendee";
+import { getAttendees } from "@/actions/getAttendees";
 import BodyWrapper from "@/components/BodyWrapper";
 import EntryForm from "@/components/EntryForm";
 

@@ -38,7 +38,7 @@ const SelectAttendee: FC<SelectAttendeeTypeProps> = ({
     setLoading(true);
 
     try {
-      const response = await axios.get("/api/attendee");
+      const response = await axios.get("/api/attendees");
       setAttendees(response.data);
     } catch (error: any) {
       console.log(error);
@@ -64,7 +64,7 @@ const SelectAttendee: FC<SelectAttendeeTypeProps> = ({
   const updateAttendee = useCallback(async (data: string) => {
     setLoading(true);
     try {
-      const response = await axios.patch(`/api/attendee`, {
+      const response = await axios.patch(`/api/attendees`, {
         name: data,
         visitorUniqueId: visitorUniqueId,
       });

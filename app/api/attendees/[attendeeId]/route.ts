@@ -7,7 +7,7 @@ import { prismaClient } from "@/lib/prismaClient";
 
 export async function GET(
   req: Request,
-  { params }: { params: { userId: string } }
+  { params }: { params: { attendeeId: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -16,41 +16,39 @@ export async function GET(
       return new NextResponse("Unauthenticated!!", { status: 401 });
     }
 
-    const { userId } = params;
+    const { attendeeId } = params;
 
-    if (!userId) {
-      return new NextResponse("User Id is required", { status: 400 });
+    if (!attendeeId) {
+      return new NextResponse("attendee Id is required", { status: 400 });
     }
 
-    const user = await prismaClient.user.findUnique({
+    const attendee = await prismaClient.attendee.findUnique({
       where: {
-        id: userId,
+        id: attendeeId,
       },
     });
 
-    if (!user) {
+    if (!attendee) {
       return new NextResponse("Use not found!!", {
         status: 400,
       });
     }
 
-    user.password = "";
-
-    return NextResponse.json(user);
+    return NextResponse.json(attendee);
   } catch (error) {
-    console.log("[USER_GET]", error);
+    console.log("[attendee_GET]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { userId: string } }
+  { params }: { params: { attendeeId: string } }
 ) {
   try {
-    const { userId } = params;
+    const { attendeeId } = params;
 
-    const { name, email, password, isAdmin } = await req.json();
+    const { name } = await req.json();
 
     const session = await getServerSession(authOptions);
 
@@ -58,54 +56,46 @@ export async function PATCH(
       return new NextResponse("Unauthenticated!!", { status: 401 });
     }
 
-    if (!userId) {
-      return new NextResponse("User Id is required", { status: 400 });
+    if (!attendeeId) {
+      return new NextResponse("attendee Id is required", { status: 400 });
     }
 
-    if (!name || !email || !password || !isAdmin) {
+    if (!name) {
       return new NextResponse("Some input data is missing!!", { status: 400 });
     }
 
-    const userExists = await prismaClient.user.findUnique({
+    const attendeeExists = await prismaClient.attendee.findUnique({
       where: {
-        id: userId,
+        id: attendeeId,
       },
     });
 
-    if (!userExists) {
-      return new NextResponse("User not found!!", {
-        status: 400,
-      });
+    if (!attendeeExists) {
+      return new NextResponse("attendee not found", { status: 400 });
     }
 
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    const user = await prismaClient.user.updateMany({
+    const attendee = await prismaClient.attendee.updateMany({
       where: {
-        id: userId,
+        id: attendeeId,
       },
       data: {
         name,
-        email,
-        password: hashedPassword,
-        isAdmin,
       },
     });
 
-    return NextResponse.json(user);
+    return NextResponse.json(attendee);
   } catch (error) {
-    console.log("[USER_PATCH]", error);
+    console.log("[attendee_PATCH]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { userId: string } }
+  { params }: { params: { attendeeId: string } }
 ) {
   try {
-    const { userId } = params;
+    const { attendeeId } = params;
 
     const session = await getServerSession(authOptions);
 
@@ -113,19 +103,19 @@ export async function DELETE(
       return new NextResponse("UnAuthorized!!", { status: 401 });
     }
 
-    if (!userId) {
-      return new NextResponse("User Id is required", { status: 400 });
+    if (!attendeeId) {
+      return new NextResponse("attendee Id is required", { status: 400 });
     }
 
-    const department = await prismaClient.user.deleteMany({
+    const department = await prismaClient.attendee.deleteMany({
       where: {
-        id: userId,
+        id: attendeeId,
       },
     });
 
     return NextResponse.json(department);
   } catch (error) {
-    console.log("[USER_DELETE]", error);
+    console.log("[attendee_DELETE]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }

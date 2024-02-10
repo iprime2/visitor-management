@@ -36,7 +36,7 @@ model Attendee {
   id        String   @id @default(uuid())
   name      String
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   visitor Visitors[] @relation("visitorToAttendee")
 }
@@ -69,7 +69,7 @@ model Feedback {
   message     String
   rating      String
   visitorId   String
-  visitor     Visitors @relation("feedbacktovisitor", fields: [visitorId], references: [id])
+  visitor     Visitors  @relation("feedbacktovisitor", fields: [visitorId], references: [id])
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }

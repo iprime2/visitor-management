@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,6 +29,7 @@ import { useSession } from "next-auth/react";
 import { UserColumnType } from "../../components/columns";
 import BodyWrapper from "@/components/BodyWrapper";
 import { Switch } from "@/components/ui/switch";
+import { ClipLoader } from "react-spinners";
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -47,42 +48,48 @@ interface UserFormPops {
   initialData: UserColumnType | any | null;
 }
 
-const UserForm: FC<UserFormPops> = ({ initialData }) => {
+const UserForm: FC<UserFormPops> = ({ initialData = null }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const title = initialData.length > 0 ? "Edit User" : "Create User";
-  const description = initialData.length > 0 ? "Edit a User" : "Add new User";
-  const toastMessage =
-    initialData.length > 0 ? "User updated!!" : "User Created!!";
-  const action = initialData.length > 0 ? "Save changes" : "Create";
+  const title = initialData ? "Edit User" : "Create User";
+  const description = initialData ? "Edit a User" : "Add new User";
+  const toastMessage = initialData ? "User updated!!" : "User Created!!";
+  const action = initialData ? "Save changes" : "Create";
 
   const params = useParams();
   const router = useRouter();
+
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!mounted) {
+      setMounted(true);
+    }
+  }, []);
 
   const { data: session } = useSession();
 
   const form = useForm<UserFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues:
-      initialData.length > 0
-        ? initialData
-        : {
-            name: "",
-            email: "",
-            password: "",
-            // imgUrl: "",
-            isAdmin: false,
-          },
+    defaultValues: initialData || {
+      name: "",
+      email: "",
+      password: "",
+      // imgUrl: "",
+      isAdmin: false,
+    },
   });
 
-  console.log(initialData);
+  if (!mounted) {
+    return null;
+  }
 
   const onSubmit = async (data: UserFormValues) => {
     setLoading(true);
 
     try {
-      if (initialData.length > 0) {
+      if (initialData) {
         await axios.patch(`/api/users/${params?.userId}`, data);
       } else {
         await axios.post(`/api/users`, data);
@@ -145,7 +152,7 @@ const UserForm: FC<UserFormPops> = ({ initialData }) => {
       />
       <div className="flex items-center justify-between">
         <Heading title={title} description={description} />
-        {initialData.length > 0 && (
+        {initialData && (
           <Button
             disabled={loading}
             variant="destructive"
@@ -180,7 +187,7 @@ const UserForm: FC<UserFormPops> = ({ initialData }) => {
               </FormItem>
             )}
           /> */}
-          <div className="grid grid-cols-3 gap-8">
+          <div className="md:grid md:grid-cols-3 md:gap-8 sm:flex sm:flex-col">
             <FormField
               control={form.control}
               name="name"
@@ -256,8 +263,8 @@ const UserForm: FC<UserFormPops> = ({ initialData }) => {
               )}
             />
           </div>
-          <Button disabled={loading} className="ml-auto" type="submit">
-            {action}
+          <Button disabled={loading} className="ml-auto gap-2" type="submit">
+            {loading && <ClipLoader color="white" size="20" />} {action}
           </Button>
         </form>
       </Form>

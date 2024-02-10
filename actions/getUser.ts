@@ -8,7 +8,7 @@ export const getUser = async (userId: string) => {
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    return null;
+    return "not authorized";
   }
 
   const user = await prismaClient.user.findUnique({
@@ -18,9 +18,7 @@ export const getUser = async (userId: string) => {
   });
 
   if (!user) {
-    return new NextResponse("Use not found!!", {
-      status: 400,
-    });
+    return null;
   }
 
   user.password = "";

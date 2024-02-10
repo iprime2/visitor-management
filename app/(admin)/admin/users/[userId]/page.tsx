@@ -13,7 +13,7 @@ const UserPage: FC<UserPageProps> = async ({ params }) => {
 
   const usersData = await getUser(userId);
 
-  if (!usersData) {
+  if (usersData === "not authorized") {
     return <Error401 />;
   }
 
