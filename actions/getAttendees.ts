@@ -15,7 +15,7 @@ export const getAttendees = async () => {
 
     return attendees;
   } catch (error) {
-    console.log("ATTENDEES_GET_ERROR");
+    console.log("GET_ATTENDEES_ERROR");
     console.log(error);
   }
 };

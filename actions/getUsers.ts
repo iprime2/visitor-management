@@ -28,7 +28,7 @@ export const getUsers = async () => {
 
     return users;
   } catch (error) {
-    console.log("VISITOR_STATS_ERROR");
+    console.log("GET_USERS_ERROR");
     console.log(error);
   }
 };

@@ -1,27 +1,31 @@
-import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { prismaClient } from "@/lib/prismaClient";
 
 export const getUser = async (userId: string) => {
-  const session = await getServerSession(authOptions);
+  try {
+    const session = await getServerSession(authOptions);
 
-  if (!session) {
-    return "not authorized";
+    if (!session) {
+      return "not authorized";
+    }
+
+    const user = await prismaClient.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    user.password = "";
+
+    return user;
+  } catch (error) {
+    console.log("GET_USER_ERROR");
+    console.log(error);
   }
-
-  const user = await prismaClient.user.findUnique({
-    where: {
-      id: userId,
-    },
-  });
-
-  if (!user) {
-    return null;
-  }
-
-  user.password = "";
-
-  return user;
 };
