@@ -27,11 +27,15 @@ import Heading from "@/components/Heading";
 
 const fileSchema = z.object({
   file: z.instanceof(File),
-  // .refine(
-  //   (file) => [".xlsx", ".xls"].includes(file.name.split(".").pop() || ""),
-  //   { message: "Only .xlsx and .xls files are allowed" }
-  // ),
 });
+
+// const fileSchema = z.object({
+//   file: z.instanceof(File),
+//   .refine(
+//     (file) => [".xlsx", ".xls"].includes(file.name.split(".").pop() || ""),
+//     { message: "Only .xlsx and .xls files are allowed" }
+//   ),
+// });
 
 type FileUploadFormValues = z.infer<typeof fileSchema>;
 
@@ -42,7 +46,7 @@ interface DataType {
   type: string;
 }
 
-const DataPage = () => {
+export default function DataPage() {
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
   const [mounted, setMounted] = useState<boolean>(false);
@@ -179,6 +183,4 @@ const DataPage = () => {
       </div>
     </BodyWrapper>
   );
-};
-
-export default DataPage;
+}
