@@ -46,9 +46,6 @@ const SettingsPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
   const [mounted, setMounted] = useState<boolean>(false);
-  const [file, setFile] = useState<File | null>(null);
-  const [jsonData, setJsonData] = useState<DataType[] | null>(null);
-  const [uploadStatus, setUploadStatus] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -108,7 +105,6 @@ const SettingsPage = () => {
   ): Promise<DataType[]> => {
     return new Promise<DataType[]>((resolve, reject) => {
       if (!data.file) {
-        setUploadStatus("Please select a file.");
         reject("No file selected");
       }
 
@@ -126,7 +122,6 @@ const SettingsPage = () => {
             prn: item.prn.toString(),
             mobile: item.mobile.toString(),
           }));
-          setUploadStatus("File converted to JSON!");
           resolve(jsonDataString);
         }
       };
