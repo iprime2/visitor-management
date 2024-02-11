@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import * as XLSX from "xlsx";
+// import * as XLSX from "xlsx";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -73,8 +73,8 @@ const SettingsPage = () => {
     setLoading(true);
 
     try {
-      const jsonData = { seedData: await handleFileConversion(data) };
-      await axios.post("/api/seed", jsonData);
+      // const jsonData = { seedData: await handleFileConversion(data) };
+      // await axios.post("/api/seed", jsonData);
       toast({
         description: "File uploaded successfully!",
         variant: "success",
@@ -98,38 +98,6 @@ const SettingsPage = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleFileConversion = async (
-    data: FileUploadFormValues
-  ): Promise<DataType[]> => {
-    return new Promise<DataType[]>((resolve, reject) => {
-      if (!data.file) {
-        reject("No file selected");
-      }
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (e.target) {
-          const buffer = e.target.result;
-          const workbook = XLSX.read(buffer, { type: "buffer" });
-          const sheetName = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[sheetName];
-          const jsonData = XLSX.utils.sheet_to_json(worksheet) as DataType[];
-
-          const jsonDataString = jsonData.map((item) => ({
-            ...item,
-            prn: item.prn.toString(),
-            mobile: item.mobile.toString(),
-          }));
-          resolve(jsonDataString);
-        }
-      };
-      reader.onerror = (error) => {
-        reject(error);
-      };
-      reader.readAsArrayBuffer(data.file);
-    });
   };
 
   const deleteData = async () => {
