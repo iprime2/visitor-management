@@ -34,7 +34,7 @@ export const visitorColumns: ColumnDef<Visitors>[] = [
     accessorKey: "attendedBy",
     header: "Attended By",
     cell: ({ row }) => (
-      <div className="flex">
+      <div className="flex w-5">
         {
           <SelectAttendee
             attendeeSelectedValue={row.original.attendedBy}
