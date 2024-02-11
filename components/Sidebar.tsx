@@ -82,7 +82,7 @@ const Sidebar = () => {
         <div className="flex items-center justify-center w-full mr-2">
           <Link href="/">
             <Image
-              src="/mit_logo_white.png"
+              src={`${process.env.NEXTAUTH_URL}/mit_logo_white.png`}
               className="cursor-pointer"
               alt="logo"
               width={200}
