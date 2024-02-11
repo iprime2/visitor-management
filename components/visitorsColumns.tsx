@@ -45,8 +45,22 @@ export const visitorColumns: ColumnDef<Visitors>[] = [
     ),
   },
   {
+    accessorKey: "query",
+    header: "Query",
+    cell: ({ row }) => (
+      <div className="flex">
+        {row.original.query ? row.original.query : "NAN"}
+      </div>
+    ),
+  },
+  {
     accessorKey: "type",
     header: "Category",
+    cell: ({ row }) => (
+      <div className="flex">
+        {row.original?.type ? row.original?.type : "NAN"}
+      </div>
+    ),
   },
   {
     accessorKey: "inTime",
