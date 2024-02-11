@@ -1,7 +1,9 @@
 import { getAttendees } from "@/actions/getAttendees";
 import BodyWrapper from "@/components/BodyWrapper";
 import EntryForm from "@/components/EntryForm";
+import Heading from "@/components/Heading";
 import FeedbackModal from "@/components/modal/FeedbackModal";
+import { Separator } from "@/components/ui/separator";
 
 type attendeeType = {
   id: string;
@@ -14,6 +16,10 @@ const AdminVisitorsPage = async () => {
   return (
     <BodyWrapper>
       <FeedbackModal />
+      <div className="w-full flex flex-col">
+        <Heading title="Visitors Form" description="Entry visitors details" />
+      </div>
+      <Separator />
       <div>
         <EntryForm attendees={attendees} />
       </div>

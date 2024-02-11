@@ -10,6 +10,7 @@ import {
 } from "./ui/select";
 import { toast } from "./ui/use-toast";
 import { ToastAction } from "./ui/toast";
+import { ClipLoader } from "react-spinners";
 
 type Attendee = {
   id: number;
@@ -29,6 +30,11 @@ const SelectAttendee: FC<SelectAttendeeTypeProps> = ({
   const [attendees, setAttendees] = useState<Attendee[] | null | undefined>(
     null
   );
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     getAttendee();
@@ -93,31 +99,44 @@ const SelectAttendee: FC<SelectAttendeeTypeProps> = ({
     }
   }, []);
 
-  return (
-    <Select
-      onValueChange={(selectedValue) => updateAttendee(selectedValue)}
-      defaultValue={attendeeSelectedValue}
-      disabled={loading}
-    >
-      <SelectTrigger>
-        <SelectValue
-          placeholder={
-            attendees && attendees?.length > 0
-              ? `Select a attendee`
-              : "Not found"
-          }
-        />
-      </SelectTrigger>
+  if (!mounted) {
+    return null;
+  }
 
-      <SelectContent>
-        {attendees &&
-          attendees?.map((attendee) => (
-            <SelectItem key={attendee.id} value={attendee.name}>
-              {attendee.name}
-            </SelectItem>
-          ))}
-      </SelectContent>
-    </Select>
+  return (
+    <>
+      {loading ? (
+        <ClipLoader
+          size={20}
+          aria-label="Loading Spinner"
+          data-testid="loader"
+        />
+      ) : (
+        <Select
+          onValueChange={(selectedValue) => updateAttendee(selectedValue)}
+          defaultValue={attendeeSelectedValue}
+          disabled={loading}
+        >
+          <SelectTrigger>
+            <SelectValue
+              placeholder={
+                attendees && attendees?.length > 0
+                  ? `Select an attendee`
+                  : "Not found"
+              }
+            />
+          </SelectTrigger>
+          <SelectContent>
+            {attendees &&
+              attendees?.map((attendee) => (
+                <SelectItem key={attendee.id} value={attendee.name}>
+                  {attendee.name}
+                </SelectItem>
+              ))}
+          </SelectContent>
+        </Select>
+      )}
+    </>
   );
 };
 

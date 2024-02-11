@@ -4,8 +4,13 @@ import { ClipLoader } from "react-spinners";
 
 export const Loader = () => {
   return (
-    <div className="flex h-view w-full items-center justify-center">
-      <ClipLoader color="#3498db" size={50} />
+    <div className="flex h-full w-full justify-center pt-10">
+      <ClipLoader
+        size={200}
+        aria-label="Loading Spinner"
+        data-testid="loader"
+        className="mt-8"
+      />
     </div>
   );
 };

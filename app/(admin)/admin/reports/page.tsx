@@ -1,6 +1,6 @@
 "use client";
 import { endOfDay, startOfDay } from "date-fns";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 import axios from "axios";
 
@@ -13,6 +13,8 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { DataTable } from "@/components/DataTable";
 import { visitorColumns } from "@/components/visitorsColumns";
 import downloadData from "@/lib/DownloadData";
+import Heading from "@/components/Heading";
+import { Separator } from "@/components/ui/separator";
 
 const ReportsPage = () => {
   const [visitors, setVisitors] = useState();
@@ -66,7 +68,11 @@ const ReportsPage = () => {
 
   return (
     <BodyWrapper>
-      <div className="flex flex-col w-full">
+      <div className="flex flex-col w-full gap-3">
+        <div className="w-full flex flex-col">
+          <Heading title="Reports" description="Manage Reports" />
+        </div>
+        <Separator />
         <p className="md:text-xl lg:text2xl sm:text-md">Select Date</p>
         <div className="flex flex-col md:flex-row gap-4 w-full">
           <DatePickerWithRange date={date} setDate={setDate} />
