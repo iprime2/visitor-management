@@ -17,7 +17,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json(attendees);
   } catch (error) {
-    console.log("[attendeeS_GET]", error);
+    console.log("[ATTENDEES_GET]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }
@@ -46,9 +46,9 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json(attendee);
+    return NextResponse.json(attendee, { status: 201 });
   } catch (error) {
-    console.log("[DEPARTMENT_POST]", error);
+    console.log("[ATTENDEES_POST]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }

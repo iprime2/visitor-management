@@ -34,9 +34,9 @@ export async function GET(
       });
     }
 
-    return NextResponse.json(attendee);
+    return NextResponse.json(attendee, { status: 200 });
   } catch (error) {
-    console.log("[attendee_GET]", error);
+    console.log("[ATTENDEE_GET]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }
@@ -83,7 +83,7 @@ export async function PATCH(
       },
     });
 
-    return NextResponse.json(attendee);
+    return NextResponse.json(attendee, { status: 200 });
   } catch (error) {
     console.log("[attendee_PATCH]", error);
     return new NextResponse("Internal error", { status: 500 });
@@ -113,7 +113,7 @@ export async function DELETE(
       },
     });
 
-    return NextResponse.json(department);
+    return NextResponse.json(department, { status: 200 });
   } catch (error) {
     console.log("[attendee_DELETE]", error);
     return new NextResponse("Internal error", { status: 500 });

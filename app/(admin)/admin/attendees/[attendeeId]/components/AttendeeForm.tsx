@@ -76,19 +76,31 @@ const AttendeeForm: FC<AttendeeFormPops> = ({ initialData }) => {
 
   const onSubmit = async (data: AttendeeFormValues) => {
     setLoading(true);
+    let response;
 
     try {
       if (initialData) {
-        await axios.patch(`/api/attendees/${params?.attendeeId}`, data);
+        response = await axios.patch(
+          `/api/attendees/${params?.attendeeId}`,
+          data
+        );
       } else {
-        await axios.post(`/api/attendees`, data);
+        response = await axios.post(`/api/attendees`, data);
       }
       router.refresh();
       router.push("/admin/attendees");
-      toast({
-        description: toastMessage,
-        variant: "success",
-      });
+      if (response.status === 201 || response.status === 200) {
+        toast({
+          description: toastMessage,
+          variant: "success",
+        });
+      } else {
+        toast({
+          description: "Something went wrong!!",
+          variant: "destructive",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
     } catch (error: any) {
       console.log(error);
       if (error.response.data) {
@@ -113,13 +125,21 @@ const AttendeeForm: FC<AttendeeFormPops> = ({ initialData }) => {
   const onDelete = async () => {
     setLoading(true);
     try {
-      await axios.delete(`/api/attendees/${params?.userId}`);
+      const response = await axios.delete(`/api/attendees/${params?.userId}`);
       router.refresh();
       router.push(`/admin/attendees`);
-      toast({
-        description: "User Deleted!",
-        variant: "destructive",
-      });
+      if (response.status === 200) {
+        toast({
+          description: "User Deleted!",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          description: "Something went wrong!!",
+          variant: "destructive",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
     } catch (error) {
       toast({
         description: "Something went wrong!!",

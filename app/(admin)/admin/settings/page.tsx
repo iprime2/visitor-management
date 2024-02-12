@@ -5,7 +5,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-// import * as XLSX from "xlsx";
+import * as XLSX from "xlsx";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -43,11 +43,6 @@ interface DataType {
 
 const SettingsPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [mounted, setMounted] = useState<boolean>(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const form = useForm<FileUploadFormValues>({
     resolver: zodResolver(fileSchema),
@@ -55,10 +50,6 @@ const SettingsPage = () => {
       file: undefined,
     },
   });
-
-  if (!mounted) {
-    return null;
-  }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;
@@ -71,12 +62,21 @@ const SettingsPage = () => {
     setLoading(true);
 
     try {
-      // const jsonData = { seedData: await handleFileConversion(data) };
-      // await axios.post("/api/seed", jsonData);
-      toast({
-        description: "File uploaded successfully!",
-        variant: "success",
-      });
+      const jsonData = { seedData: await handleFileConversion(data) };
+      const response = await axios.post("/api/seed", jsonData);
+      console.log(response);
+      if (response.status === 201) {
+        toast({
+          description: "Data uploaded successfully!",
+          variant: "success",
+        });
+      } else {
+        toast({
+          description: "Something went wrong!!",
+          variant: "destructive",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
     } catch (error: any) {
       console.log(error);
       if (error.response.data) {
@@ -98,54 +98,71 @@ const SettingsPage = () => {
     }
   };
 
-  // const handleFileConversion = async (
-  //   data: FileUploadFormValues
-  // ): Promise<DataType[]> => {
-  //   return new Promise<DataType[]>((resolve, reject) => {
-  //     if (!data.file) {
-  //       reject("No file selected");
-  //     }
+  const handleFileConversion = async (
+    data: FileUploadFormValues
+  ): Promise<DataType[]> => {
+    return new Promise<DataType[]>((resolve, reject) => {
+      if (!data.file) {
+        reject("No file selected");
+      }
 
-  //     const reader = new FileReader();
-  //     reader.onload = (e) => {
-  //       if (e.target) {
-  //         const buffer = e.target.result;
-  //         const workbook = XLSX.read(buffer, { type: "buffer" });
-  //         const sheetName = workbook.SheetNames[0];
-  //         const worksheet = workbook.Sheets[sheetName];
-  //         const jsonData = XLSX.utils.sheet_to_json(worksheet) as DataType[];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (e.target) {
+          const buffer = e.target.result;
+          const workbook = XLSX.read(buffer, { type: "buffer" });
+          const sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet) as DataType[];
 
-  //         const jsonDataString = jsonData.map((item) => ({
-  //           ...item,
-  //           prn: item.prn.toString(),
-  //           mobile: item.mobile.toString(),
-  //         }));
-  //         resolve(jsonDataString);
-  //       }
-  //     };
-  //     reader.onerror = (error) => {
-  //       reject(error);
-  //     };
-  //     reader.readAsArrayBuffer(data.file);
-  //   });
-  // };
+          const jsonDataString = jsonData.map((item) => ({
+            ...item,
+            prn: item.prn.toString(),
+            mobile: item.mobile.toString(),
+          }));
+          resolve(jsonDataString);
+        }
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+      reader.readAsArrayBuffer(data.file);
+    });
+  };
 
   const deleteData = async () => {
     setLoading(true);
 
     try {
-      await axios.delete("/api/seed");
-      toast({
-        description: "Data deleted successfully!",
-        variant: "success",
-      });
+      const response = await axios.delete("/api/seed");
+      if (response.status === 200) {
+        toast({
+          description: "Data deleted successfully!",
+          variant: "success",
+        });
+      } else {
+        toast({
+          description: "Something went wrong!!",
+          variant: "destructive",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
     } catch (error: any) {
       console.log(error);
-      toast({
-        description: "Something went wrong!!",
-        variant: "destructive",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      });
+      if (error.response.data) {
+        const errMessage = error?.response?.data;
+        toast({
+          description: errMessage,
+          variant: "destructive",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      } else {
+        toast({
+          description: "Something went wrong!!",
+          variant: "destructive",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -203,7 +220,7 @@ const SettingsPage = () => {
             first Delete prvious data by clicking on Delete Button, Otherwise
             upload excel file and click on Upload.
           </p>
-          <h3>1. Upload Button upload&apos;s excel file data in Datab-ase</h3>
+          <h3>1. Upload Button upload&apos;s excel file data in Database</h3>
           <h3>2. Delete Button delete data from Database</h3>
         </div>
       </div>
