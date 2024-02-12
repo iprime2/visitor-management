@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import logoWhiteImage from "../assets/mit_logo_white.png";
 
 const montserrat = Montserrat({ weight: "600", subsets: ["latin"] });
 
@@ -73,6 +74,7 @@ const routes = [
 ];
 const Sidebar = () => {
   const pathName = usePathname();
+
   const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
@@ -89,10 +91,10 @@ const Sidebar = () => {
         <div className="flex items-center justify-center w-full mr-2">
           <Link href="/">
             <Image
-              src={`${process.env.NEXTAUTH_URL}/mit_logo_white.png`}
+              src={logoWhiteImage}
               className="cursor-pointer"
               alt="logo"
-              width={200}
+              width={190}
               height={55}
             />
           </Link>

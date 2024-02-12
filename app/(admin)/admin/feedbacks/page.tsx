@@ -46,6 +46,7 @@ const FeedbacksPage = () => {
     try {
       const res = await axios.post(`/api/feedback/reports`, finalDate);
       setFeedbacks(res.data);
+      console.log(res.data);
       toast({
         description: "Data Fetched",
         variant: "success",
@@ -99,7 +100,11 @@ const FeedbacksPage = () => {
               />
             </div>
           ) : feedbacks ? (
-            <DataTable columns={columns} data={feedbacks} searchKey="name" />
+            <DataTable
+              columns={columns}
+              data={feedbacks}
+              searchKey="visitorPrn"
+            />
           ) : (
             <h3>Select The Date!!</h3>
           )}

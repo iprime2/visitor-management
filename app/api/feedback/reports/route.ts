@@ -20,6 +20,18 @@ export async function POST(req: Request) {
           lte: new Date(toDate),
         },
       },
+      select: {
+        id: true,
+        message: true,
+        rating: true,
+        createdAt: true,
+        visitor: {
+          select: {
+            visitorPrn: true,
+            visitorName: true,
+          },
+        },
+      },
       orderBy: {
         createdAt: "desc",
       },

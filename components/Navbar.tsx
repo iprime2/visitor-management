@@ -2,7 +2,9 @@
 import React, { FC, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+
 import { cn } from "@/lib/utils";
+import logoImage from "../assets/mit-wpu_logo.png";
 
 type NavbarPropsType = {
   type: string;
@@ -17,6 +19,7 @@ const Navbar: FC<NavbarPropsType> = ({ type }) => {
   if (!mounted) {
     return null;
   }
+
   return (
     <div
       className={cn(
@@ -36,7 +39,7 @@ const Navbar: FC<NavbarPropsType> = ({ type }) => {
           )}
         >
           <Image
-            src="/mit-wpu_logo.png"
+            src={logoImage}
             className="ml-4 cursor-pointer object-contain md:w-[260px] md:h-[55px] sm:w-[120px] sm:h-[35px]"
             alt="logo"
             width={120}

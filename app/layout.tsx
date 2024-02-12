@@ -21,10 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <Provider>
         <Toaster />
-        <body className={inter.className}>
-          {/* <FeedbackModal /> */}
-          {children}
-        </body>
+        <body className={inter.className}>{children}</body>
       </Provider>
     </html>
   );

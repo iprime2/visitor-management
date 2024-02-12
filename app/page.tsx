@@ -53,9 +53,9 @@ export default function Home() {
     },
   });
 
-  if (!mounted) {
-    return null;
-  }
+  // if (!mounted) {
+  //   return null;
+  // }
 
   if (session) {
     router.push("/admin/dashboard");
