@@ -3,7 +3,7 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
-export async function GET(req: Request) {
+export async function POST(req: Request) {
   try {
     const { fromDate, toDate } = await req.json();
 
@@ -29,7 +29,7 @@ export async function GET(req: Request) {
       return new NextResponse("No feedback found!!", { status: 400 });
     }
 
-    return feedbacks;
+    return NextResponse.json(feedbacks);
   } catch (error) {
     console.log("[FEEDBACK_GET]", error);
     return new NextResponse("Internal error", { status: 500 });

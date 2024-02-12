@@ -32,7 +32,7 @@ const FeedbacksPage = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  });
 
   const fetchData = async () => {
     setLoading(true);
