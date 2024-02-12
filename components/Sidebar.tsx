@@ -14,6 +14,7 @@ import {
   LogOutIcon,
   Users2Icon,
   SettingsIcon,
+  NotebookTextIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
@@ -50,6 +51,12 @@ const routes = [
     href: "/admin/reports",
     icon: FileSpreadsheetIcon,
     color: "text-violet-500",
+  },
+  {
+    label: "Feedbacks",
+    href: "/admin/feedbacks",
+    icon: NotebookTextIcon,
+    color: "text-amber-500",
   },
   {
     label: "Settings",

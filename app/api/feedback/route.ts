@@ -1,4 +1,6 @@
 import { prismaClient } from "@/lib/prismaClient";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {

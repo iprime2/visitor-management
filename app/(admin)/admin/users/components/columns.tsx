@@ -15,7 +15,7 @@ export type UserColumnType = {
   updatedAt: Date;
 };
 
-export const columns: ColumnDef<UserColumnType>[] | ColumnDef<UserColumnType> =
+export const columns: ColumnDef<UserColumnType>[] =
   [
     {
       accessorKey: "name",
