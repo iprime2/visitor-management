@@ -39,11 +39,6 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { data: session } = useSession();
-  const [mounted, setMounted] = useState<boolean>(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(formSchema),
@@ -52,10 +47,6 @@ export default function Home() {
       password: "",
     },
   });
-
-  // if (!mounted) {
-  //   return null;
-  // }
 
   if (session) {
     router.push("/admin/dashboard");

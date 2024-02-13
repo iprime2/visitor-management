@@ -6,6 +6,7 @@ export const getAttendees = async () => {
       select: {
         id: true,
         name: true,
+        createdAt: true,
       },
     });
 

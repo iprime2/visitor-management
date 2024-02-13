@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { Toaster } from "@/components/ui/toaster";
 import Navbar from "@/components/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -16,12 +15,9 @@ export default function VisitorLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <Toaster />
-      <body className={inter.className}>
-        <Navbar type="public" />
-        {children}
-      </body>
-    </html>
+    <main>
+      <Navbar type="public" />
+      {children}
+    </main>
   );
 }
