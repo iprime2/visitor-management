@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { FC, useCallback, useEffect, useState } from "react";
 import axios from "axios";
@@ -36,10 +36,12 @@ const SelectAttendee: FC<SelectAttendeeTypeProps> = ({
 
   useEffect(() => {
     setMounted(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     getAttendee();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getAttendee = useCallback(async () => {
@@ -69,37 +71,40 @@ const SelectAttendee: FC<SelectAttendeeTypeProps> = ({
     }
   }, []);
 
-  const updateAttendee = useCallback(async (data: string) => {
-    setLoading(true);
-    try {
-      const response = await axios.patch(`/api/attendees`, {
-        name: data,
-        visitorUniqueId: visitorUniqueId,
-      });
-      toast({
-        description: "Attendee updated",
-        variant: "success",
-      });
-    } catch (error: any) {
-      console.log(error);
-      if (error.response.data) {
-        const errMessage = error?.response?.data;
-        toast({
-          description: errMessage,
-          variant: "destructive",
-          action: <ToastAction altText="Try again">Try again</ToastAction>,
+  const updateAttendee = useCallback(
+    async (data: string) => {
+      setLoading(true);
+      try {
+        const response = await axios.patch(`/api/attendees`, {
+          name: data,
+          visitorUniqueId: visitorUniqueId,
         });
-      } else {
         toast({
-          description: "Something went wrong!!",
-          variant: "destructive",
-          action: <ToastAction altText="Try again">Try again</ToastAction>,
+          description: "Attendee updated",
+          variant: "success",
         });
+      } catch (error: any) {
+        console.log(error);
+        if (error.response.data) {
+          const errMessage = error?.response?.data;
+          toast({
+            description: errMessage,
+            variant: "destructive",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            description: "Something went wrong!!",
+            variant: "destructive",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+    [visitorUniqueId]
+  );
 
   if (!mounted) {
     return null;

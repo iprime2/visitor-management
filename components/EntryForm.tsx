@@ -30,6 +30,7 @@ import {
 import { useFeedbackModal } from "@/hooks/useFeedbackModal";
 import ClipLoader from "react-spinners/ClipLoader";
 import FeedbackModal from "./modal/FeedbackModal";
+import Link from "next/link";
 
 const visitorFormSchema = z.object({
   visitorPrn: z.string(),
@@ -42,7 +43,11 @@ const visitorFormSchema = z.object({
 type VisitorsFormValues = z.infer<typeof visitorFormSchema>;
 
 type EntryFormPropsType = {
-  attendees: { id: string; name: string }[] | null | undefined;
+  attendees:
+    | { id: string; name: string; createdAt: Date }[]
+    | string
+    | null
+    | undefined;
 };
 
 const EntryForm: FC<EntryFormPropsType> = ({ attendees }) => {
@@ -194,17 +199,28 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees }) => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {attendees?.map((attendee) => (
-                      <SelectItem key={attendee.id} value={attendee.name}>
-                        {attendee.name}
-                      </SelectItem>
-                    ))}
+                    {attendees &&
+                      Array.isArray(attendees) &&
+                      attendees.map(
+                        (attendee: {
+                          id: string;
+                          name: string;
+                          createdAt: Date;
+                        }) => (
+                          <SelectItem key={attendee.id} value={attendee.name}>
+                            {attendee.name}
+                          </SelectItem>
+                        )
+                      )}
                   </SelectContent>
                 </Select>
-                {/* <FormDescription>
-                  You can manage email addresses in your{" "}
-                  <Link href="/examples/forms">email settings</Link>.
-                </FormDescription> */}
+                <FormDescription>
+                  You can manage{" "}
+                  <Link href="/admin/attendees" className="text-blue-500">
+                    attendees settings
+                  </Link>
+                  .
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}

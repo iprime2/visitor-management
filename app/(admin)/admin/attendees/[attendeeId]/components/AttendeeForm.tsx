@@ -61,6 +61,7 @@ const AttendeeForm: FC<AttendeeFormPops> = ({ initialData }) => {
     if (!mounted) {
       setMounted(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const form = useForm<AttendeeFormValues>({

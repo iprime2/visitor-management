@@ -5,13 +5,13 @@ import { prismaClient } from "@/lib/prismaClient";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
 export const getVisitorsStats = async () => {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    return null;
+  }
+
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session) {
-      return null;
-    }
-
     const totalVisitors = await prismaClient.visitors.aggregate({
       _count: {
         _all: true,

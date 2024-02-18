@@ -13,7 +13,7 @@ import { getAttendees } from "@/actions/getAttendees";
 const AttendeesPage = async () => {
   const attendees = await getAttendees();
 
-  if (!attendees) {
+  if (attendees === "not authorized") {
     return <Error401 />;
   }
 

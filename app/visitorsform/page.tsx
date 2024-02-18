@@ -5,10 +5,12 @@ import EntryForm from "@/components/EntryForm";
 type attendeeType = {
   id: string;
   name: string;
+  createdAt: Date;
 };
 
 const VisitorsPage = async () => {
-  const attendees: attendeeType[] | null | undefined = await getAttendees();
+  const attendees: attendeeType[] | string | null | undefined =
+    await getAttendees();
 
   return (
     <BodyWrapper>

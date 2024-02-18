@@ -4,13 +4,13 @@ import { prismaClient } from "@/lib/prismaClient";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
 export const getUsers = async () => {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    return null;
+  }
+
   try {
-    const session = await getServerSession(authOptions);
-
-    if (!session) {
-      return null;
-    }
-
     const users = await prismaClient.user.findMany({
       select: {
         id: true,
