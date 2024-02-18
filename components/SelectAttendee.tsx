@@ -20,12 +20,12 @@ type Attendee = {
 };
 
 type SelectAttendeeTypeProps = {
-  attendeeSelectedValue: string;
+  attendeeSelectedValueProps: string;
   visitorUniqueId: string;
 };
 
 const SelectAttendee: FC<SelectAttendeeTypeProps> = ({
-  attendeeSelectedValue,
+  attendeeSelectedValueProps,
   visitorUniqueId,
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -33,6 +33,8 @@ const SelectAttendee: FC<SelectAttendeeTypeProps> = ({
     null
   );
   const [mounted, setMounted] = useState<boolean>(false);
+  const [attendeeSelectedValue, setAttendeeSelectedValue] =
+    useState<string>("NAN");
 
   useEffect(() => {
     setMounted(true);
@@ -41,6 +43,7 @@ const SelectAttendee: FC<SelectAttendeeTypeProps> = ({
 
   useEffect(() => {
     getAttendee();
+    setAttendeeSelectedValue(attendeeSelectedValueProps);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -71,40 +74,41 @@ const SelectAttendee: FC<SelectAttendeeTypeProps> = ({
     }
   }, []);
 
-  const updateAttendee = useCallback(
-    async (data: string) => {
-      setLoading(true);
-      try {
-        const response = await axios.patch(`/api/attendees`, {
-          name: data,
-          visitorUniqueId: visitorUniqueId,
-        });
+  const updateAttendee = useCallback(async (data: string) => {
+    setLoading(true);
+    const finalData = { name: data };
+    try {
+      const res = await axios.patch(
+        `/api/updateAttendee/${visitorUniqueId}`,
+        finalData
+      );
+      toast({
+        description: "Attendee updated",
+        variant: "success",
+      });
+      setAttendeeSelectedValue(res.data.attendedBy as string);
+      console.log(res);
+    } catch (error: any) {
+      console.log(error);
+      if (error.response.data) {
+        const errMessage = error?.response?.data;
         toast({
-          description: "Attendee updated",
-          variant: "success",
+          description: errMessage,
+          variant: "destructive",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
         });
-      } catch (error: any) {
-        console.log(error);
-        if (error.response.data) {
-          const errMessage = error?.response?.data;
-          toast({
-            description: errMessage,
-            variant: "destructive",
-            action: <ToastAction altText="Try again">Try again</ToastAction>,
-          });
-        } else {
-          toast({
-            description: "Something went wrong!!",
-            variant: "destructive",
-            action: <ToastAction altText="Try again">Try again</ToastAction>,
-          });
-        }
-      } finally {
-        setLoading(false);
+      } else {
+        toast({
+          description: "Something went wrong!!",
+          variant: "destructive",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
       }
-    },
-    [visitorUniqueId]
-  );
+    } finally {
+      setLoading(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!mounted) {
     return null;
@@ -137,7 +141,7 @@ const SelectAttendee: FC<SelectAttendeeTypeProps> = ({
             {attendees &&
               attendees?.map((attendee) => (
                 <SelectItem key={attendee.id} value={attendee.name}>
-                  {attendee.name}
+                  {attendee.name ? attendee.name : "NAN"}
                 </SelectItem>
               ))}
           </SelectContent>

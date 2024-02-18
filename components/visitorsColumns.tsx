@@ -37,7 +37,7 @@ export const visitorColumns: ColumnDef<Visitors>[] = [
       <div className="flex">
         {
           <SelectAttendee
-            attendeeSelectedValue={row.original.attendedBy}
+            attendeeSelectedValueProps={row.original.attendedBy}
             visitorUniqueId={row.original.id}
           />
         }
