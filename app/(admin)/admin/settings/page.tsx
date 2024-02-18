@@ -25,12 +25,16 @@ import { Separator } from "@/components/ui/separator";
 import Heading from "@/components/Heading";
 
 const fileSchema = z.object({
-  file: z.instanceof(File),
-  // .refine(
-  //   (file) => [".xlsx", ".xls"].includes(file.name.split(".").pop() || ""),
-  //   { message: "Only .xlsx and .xls files are allowed" }
-  // ),
+  file: typeof File !== "undefined" ? z.instanceof(File) : z.any(),
 });
+
+// const fileSchema = z.object({
+// file: z.instanceof(File),
+// .refine(
+//   (file) => [".xlsx", ".xls"].includes(file.name.split(".").pop() || ""),
+//   { message: "Only .xlsx and .xls files are allowed" }
+// ),
+// });
 
 type FileUploadFormValues = z.infer<typeof fileSchema>;
 
