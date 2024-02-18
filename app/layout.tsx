@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import Provider from "@/providers/Provider";
 import FeedbackModal from "@/components/modal/FeedbackModal";
+import TabLogo from "../assets/tab_logo.png";
 
 const inter = Inter({ subsets: ["latin"] });
 
