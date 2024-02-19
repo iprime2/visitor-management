@@ -5,17 +5,11 @@ export async function POST(req: Request) {
   const { mobile, visitorId } = await req.json();
   try {
     if (!mobile) {
-      return NextResponse.json(
-        { message: "Mobile number is required" },
-        { status: 400 }
-      );
+      return new Response("Mobile number is required", { status: 400 });
     }
 
     if (!visitorId) {
-      return NextResponse.json(
-        { message: "Visitor Id is required" },
-        { status: 400 }
-      );
+      return new Response("Visitor Id is required", { status: 400 });
     }
 
     const accountSid: string = process.env.TWILIO_ACCOUNT_SID as string;
@@ -24,7 +18,7 @@ export async function POST(req: Request) {
       logLevel: "debug",
     });
 
-    const res = client.messages.create({
+    const res = await client.messages.create({
       body: `Thank You for visiting MIT_WPU. Kindly share your experience by providing feedback. Kindly ignore if you have already submitted feedback. ${process.env.URL}/feedback/${visitorId}`,
       from: "whatsapp:+14155238886",
       to: `whatsapp:+91${mobile}`,
@@ -32,7 +26,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(res, { status: 200 });
   } catch (error) {
-    console.log(error);
-    return NextResponse.json(error, { status: 500 });
+    console.log("SEND_MESSAGE_ERROR");
+    console.error(error);
   }
 }

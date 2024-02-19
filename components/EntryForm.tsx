@@ -94,13 +94,38 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees, type }) => {
         });
         const visitorOutId = response.data.id;
         feedbackModal.onOpen(visitorOutId);
-        await axios.post(`/api/message`, {
-          mobile: response.data.mobile,
-          visitorId: visitorOutId,
-        });
+        sendFeedbackMessage(response.data.mobile, visitorOutId);
       }
       router.refresh();
       resetForm();
+    } catch (error: any) {
+      console.log(error);
+      if (error.response.data) {
+        const errMessage = error?.response?.data;
+        toast({
+          description: errMessage,
+          variant: "destructive",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      } else {
+        toast({
+          description: "Something went wrong!!",
+          variant: "destructive",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const sendFeedbackMessage = async (mobile: string, visitorId: string) => {
+    setLoading(true);
+    try {
+      await axios.post(`/api/message`, {
+        mobile,
+        visitorId,
+      });
     } catch (error: any) {
       console.log(error);
       if (error.response.data) {
