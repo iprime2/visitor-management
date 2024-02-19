@@ -25,8 +25,7 @@ export async function POST(req: Request) {
     });
 
     const res = client.messages.create({
-      // body: `Thank You for visiting MIT_WPU. Kindly share your experience by providing feedback.`,
-      body: `Thank You for visiting MIT_WPU. Kindly share your experience by providing feedback. ${process.env.URL}/feedback/${visitorId}`,
+      body: `Thank You for visiting MIT_WPU. Kindly share your experience by providing feedback. Kindly ignore if you have already submitted feedback. ${process.env.URL}/feedback/${visitorId}`,
       from: "whatsapp:+14155238886",
       to: `whatsapp:+91${mobile}`,
     });
