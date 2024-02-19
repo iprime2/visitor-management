@@ -37,6 +37,7 @@
     "formidable": "^3.5.1",
     "ioredis": "^5.3.2",
     "lucide-react": "^0.315.0",
+    "net": "^1.0.2",
     "next": "14.1.0",
     "next-auth": "^4.24.5",
     "react": "^18",
@@ -47,6 +48,7 @@
     "sharp": "^0.33.2",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
+    "twilio": "^4.22.0",
     "xlsx": "^0.18.5",
     "zod": "^3.22.4",
     "zustand": "^4.5.0"

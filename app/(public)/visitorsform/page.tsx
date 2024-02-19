@@ -1,5 +1,4 @@
 import { getAttendees } from "@/actions/getAttendees";
-import Error401 from "@/components/401";
 import BodyWrapper from "@/components/BodyWrapper";
 import EntryForm from "@/components/EntryForm";
 import Heading from "@/components/Heading";
@@ -11,27 +10,28 @@ type attendeeType = {
   createdAt: Date;
 };
 
-const AdminVisitorsPage = async () => {
+const VisitorsPage = async () => {
   const attendees: attendeeType[] | string | null | undefined =
     await getAttendees();
 
-  if (attendees === "not authorized") {
-    return <Error401 />;
-  }
-
   return (
     <BodyWrapper>
-      <div>
-        <div className="w-full flex flex-col">
-          <Heading title="Visitors Form" description="Entry visitors details" />
-        </div>
+      <div className="flex flex-col gap-2">
+        <Heading
+          title="Welcome To MIT-WPU"
+          description="Please fill your details."
+        />
         <Separator />
-        <div className="mt-4">
-          <EntryForm attendees={attendees} type="public" />
-        </div>
+      </div>
+      <div>
+        <EntryForm attendees={attendees} type="public" />
+      </div>
+      <Separator />
+      <div className="flex items-center justify-center text-2xl text-bold">
+        Thank you for visiting MIT-WPU!
       </div>
     </BodyWrapper>
   );
 };
 
-export default AdminVisitorsPage;
+export default VisitorsPage;

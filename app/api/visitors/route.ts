@@ -28,6 +28,7 @@ export async function POST(req: Request) {
 
         return NextResponse.json({
           id: visitorExists.id,
+          mobile: visitorExists.mobile,
           message: "Visitor Checked Out",
           status: 200,
         });

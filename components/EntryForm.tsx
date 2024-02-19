@@ -29,7 +29,6 @@ import {
 } from "@/components/ui/select";
 import { useFeedbackModal } from "@/hooks/useFeedbackModal";
 import ClipLoader from "react-spinners/ClipLoader";
-import FeedbackModal from "./modal/FeedbackModal";
 import Link from "next/link";
 
 const visitorFormSchema = z.object({
@@ -48,9 +47,10 @@ type EntryFormPropsType = {
     | string
     | null
     | undefined;
+  type: string;
 };
 
-const EntryForm: FC<EntryFormPropsType> = ({ attendees }) => {
+const EntryForm: FC<EntryFormPropsType> = ({ attendees, type }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
   const feedbackModal = useFeedbackModal();
@@ -80,7 +80,6 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees }) => {
 
     try {
       const response = await axios.post(`/api/visitors`, data);
-
       const responseStatusCode = response.status;
       if (responseStatusCode === 201) {
         toast({
@@ -95,6 +94,10 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees }) => {
         });
         const visitorOutId = response.data.id;
         feedbackModal.onOpen(visitorOutId);
+        await axios.post(`/api/message`, {
+          mobile: response.data.mobile,
+          visitorId: visitorOutId,
+        });
       }
       router.refresh();
       resetForm();
@@ -144,6 +147,10 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees }) => {
                     {...field}
                   />
                 </FormControl>
+                {/* <FormDescription>
+                  Please enter your Student PRN number or Employee ID if you are
+                  Student or Employee of college.
+                </FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
@@ -161,6 +168,10 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees }) => {
                     {...field}
                   />
                 </FormControl>
+                {/* <FormDescription>
+                  Please enter your name if you are not Student and Employee of
+                  college.
+                </FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
@@ -177,6 +188,10 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees }) => {
                     placeholder={"Enter Visitor Mobile No."}
                     {...field}
                   />
+                  {/* <FormDescription>
+                    Please enter your mobile number if you are not Student and
+                    Employee of college.
+                  </FormDescription> */}
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -214,13 +229,20 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees }) => {
                       )}
                   </SelectContent>
                 </Select>
-                <FormDescription>
-                  You can manage{" "}
-                  <Link href="/admin/attendees" className="text-blue-500">
-                    attendees settings
-                  </Link>
-                  .
-                </FormDescription>
+                {type === "admin" && (
+                  <FormDescription>
+                    You can manage{" "}
+                    <Link href="/admin/attendees" className="text-blue-500">
+                      attendees settings
+                    </Link>
+                    .
+                  </FormDescription>
+                )}
+                {type === "public" && (
+                  <FormDescription>
+                    Please select the visitor whom you want to meet.
+                  </FormDescription>
+                )}
                 <FormMessage />
               </FormItem>
             )}
@@ -238,6 +260,7 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees }) => {
                     {...field}
                   />
                 </FormControl>
+                {/* <FormDescription>Please enter your query.</FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}

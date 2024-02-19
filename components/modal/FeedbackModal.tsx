@@ -14,18 +14,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Button } from "../ui/button";
 import CustomModal from "./CustomModal";
 
 import { toast } from "../ui/use-toast";
 import { ToastAction } from "../ui/toast";
-import { Separator } from "../ui/separator";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useFeedbackModal } from "@/hooks/useFeedbackModal";
 import { Textarea } from "../ui/textarea";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { FrownIcon, LaughIcon, SmileIcon } from "lucide-react";
 
 interface FeedbackModalProps {}
 
@@ -70,6 +67,7 @@ const FeedbackModal: FC<FeedbackModalProps> = ({}) => {
         title: "Feedback Submitted!",
         variant: "success",
       });
+      form.reset();
       feedbackModal.onClose();
     } catch (error) {
       console.log(error);
