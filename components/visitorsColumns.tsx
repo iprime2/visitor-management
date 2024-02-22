@@ -63,6 +63,28 @@ export const visitorColumns: ColumnDef<Visitors>[] = [
     ),
   },
   {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => (
+      <div
+        className={cn(
+          "flex items-center p-2  justify-center text-white rounded-md",
+          row.original.status === "closed" && "bg-green-500",
+          row.original.status === "open" && "bg-red-500"
+        )}
+      >
+        {row.original.status || "NAN"}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "remark",
+    header: "Remark",
+    cell: ({ row }) => (
+      <div className="flex">{row.original?.remark || "NAN"}</div>
+    ),
+  },
+  {
     accessorKey: "inTime",
     header: "In Time",
     cell: ({ row }) => (
@@ -84,7 +106,7 @@ export const visitorColumns: ColumnDef<Visitors>[] = [
     cell: ({ row }) => (
       <div
         className={cn(
-          "flex p-1 text-white",
+          "flex p-2 text-white rounded-md",
           row.original.outTime ? "bg-green-500" : "bg-red-500"
         )}
       >
@@ -96,7 +118,7 @@ export const visitorColumns: ColumnDef<Visitors>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: "Date-Time",
+    header: "Date",
     cell: ({ row }) => (
       <div className="flex">
         {row.original.createdAt ? format(row.original.createdAt, "PP") : "NAN"}

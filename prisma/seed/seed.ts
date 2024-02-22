@@ -41,13 +41,11 @@ async function seed() {
 
     // Create an array of attendees to be inserted
     const attendees = [
-      { name: "Registrar" },
-      { name: "Mr.Laxaman Badime" },
-      { name: "Assistant Registrar" },
-      { name: "Deputy Registrar" },
+      { name: "Registrar", sequence: 1 },
+      { name: "Deputy Registrar", sequence: 2 },
     ];
 
-    // Insert the datas into the database
+    // Insert the data into the database
     const createdAttendees = await prismaClient.attendee.createMany({
       data: attendees,
     });

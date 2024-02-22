@@ -15,7 +15,11 @@ export const getAttendees = async () => {
       select: {
         id: true,
         name: true,
+        sequence: true,
         createdAt: true,
+      },
+      orderBy: {
+        sequence: "asc",
       },
     });
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, ReactNode, useEffect, useState } from "react";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -55,6 +55,7 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees, type }) => {
   const router = useRouter();
   const feedbackModal = useFeedbackModal();
   const [mounted, setMounted] = useState<boolean>(false);
+  const [visitorType, setVisitorType] = useState<string>("first");
 
   useEffect(() => {
     setMounted(true);
@@ -97,7 +98,8 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees, type }) => {
         sendFeedbackMessage(response.data.mobile, visitorOutId);
       }
       router.refresh();
-      resetForm();
+      window.location.reload();
+      // resetForm();
     } catch (error: any) {
       console.log(error);
       if (error.response.data) {
@@ -148,80 +150,99 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees, type }) => {
   };
 
   const resetForm = () => {
-    form.reset();
+    form.reset({
+      visitorPrn: "",
+      visitorName: "",
+      mobile: "",
+      attendedBy: "",
+      query: "",
+    });
   };
 
-  return (
-    <div>
+  const toggleVisitorType = (value: string) => {
+    setVisitorType(value);
+  };
+
+  const Student = () => (
+    <FormField
+      control={form.control}
+      name="visitorPrn"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Student PRN/ Employee ID</FormLabel>
+          <FormControl>
+            <Input
+              className="focus"
+              disabled={loading}
+              placeholder={"Enter Student PRN number / Employee ID"}
+              {...field}
+            />
+          </FormControl>
+          {/* <FormDescription>
+                  Please enter your Student PRN number or Employee ID if you are
+                  Student or Employee of college.
+                </FormDescription> */}
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+
+  const Visitor = () => (
+    <>
+      <FormField
+        control={form.control}
+        name="visitorName"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Visitor Name</FormLabel>
+            <FormControl>
+              <Input
+                disabled={loading}
+                placeholder={"Enter Visitor Name"}
+                {...field}
+              />
+            </FormControl>
+            {/* <FormDescription>
+                  Please enter your name if you are not Student and Employee of
+                  college.
+                </FormDescription> */}
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name="mobile"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Visitor Mobile No.</FormLabel>
+            <FormControl>
+              <Input
+                disabled={loading}
+                placeholder={"Enter Visitor Mobile No."}
+                {...field}
+              />
+              {/* <FormDescription>
+                    Please enter your mobile number if you are not Student and
+                    Employee of college.
+                  </FormDescription> */}
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </>
+  );
+
+  const Other: FC<{ children: ReactNode }> = ({ children }) => (
+    <div className="w-full transition-opacity duration-700 ease-in-out">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-2 w-full"
         >
-          <FormField
-            control={form.control}
-            name="visitorPrn"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Student PRN/ Employee ID</FormLabel>
-                <FormControl>
-                  <Input
-                    className="focus"
-                    disabled={loading}
-                    placeholder={"Enter Student PRN number / Employee ID"}
-                    {...field}
-                  />
-                </FormControl>
-                {/* <FormDescription>
-                  Please enter your Student PRN number or Employee ID if you are
-                  Student or Employee of college.
-                </FormDescription> */}
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="visitorName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Visitor Name</FormLabel>
-                <FormControl>
-                  <Input
-                    disabled={loading}
-                    placeholder={"Enter Visitor Name"}
-                    {...field}
-                  />
-                </FormControl>
-                {/* <FormDescription>
-                  Please enter your name if you are not Student and Employee of
-                  college.
-                </FormDescription> */}
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="mobile"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Visitor Mobile No.</FormLabel>
-                <FormControl>
-                  <Input
-                    disabled={loading}
-                    placeholder={"Enter Visitor Mobile No."}
-                    {...field}
-                  />
-                  {/* <FormDescription>
-                    Please enter your mobile number if you are not Student and
-                    Employee of college.
-                  </FormDescription> */}
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {children}
           <FormField
             control={form.control}
             name="attendedBy"
@@ -302,9 +323,60 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees, type }) => {
             >
               {loading && <ClipLoader color="white" size="20" />} Clear Form
             </Button>
+            <Button
+              disabled={loading}
+              className="w-full gap-2"
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+                toggleVisitorType("first")
+              }
+            >
+              {loading && <ClipLoader color="white" size="20" />} Go Back
+            </Button>
           </div>
         </form>
       </Form>
+    </div>
+  );
+
+  const startForm = () => (
+    <div className="w-full flex flex-col gap-4 transition-opacity duration-700 ease-in-out">
+      <h2 className="text-2xl font-bold">
+        Welcome to MIT-WPU. Please choose the type of visitor.
+      </h2>
+      <div className="w-full flex item-center justify-end gap-4">
+        <Button
+          className="w-[200px]"
+          onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+            toggleVisitorType("studentEmployee")
+          }
+        >
+          Student/employee
+        </Button>
+        <Button
+          className="w-[200px]"
+          onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+            toggleVisitorType("others")
+          }
+        >
+          Other
+        </Button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div>
+      {visitorType === "first" && startForm()}
+      {visitorType === "studentEmployee" && (
+        <Other>
+          <Student />
+        </Other>
+      )}
+      {visitorType === "others" && (
+        <Other>
+          <Visitor />
+        </Other>
+      )}
     </div>
   );
 };

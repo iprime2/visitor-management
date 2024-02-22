@@ -34,6 +34,7 @@ export function DatePickerWithRange({
   if (!mounted) {
     return null;
   }
+
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover>

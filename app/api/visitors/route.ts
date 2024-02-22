@@ -103,6 +103,8 @@ export async function POST(req: Request) {
           attendedBy,
           attendeeId: attendee.id,
           query,
+          status: "open",
+          remark: "",
         },
       });
 
@@ -128,6 +130,8 @@ export async function POST(req: Request) {
           attendedBy,
           attendeeId: attendee.id,
           query,
+          status: "open",
+          remark: "",
         },
       });
 

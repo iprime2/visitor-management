@@ -13,7 +13,11 @@ export async function GET(req: Request) {
       return new NextResponse("Unauthenticated!!", { status: 401 });
     }
 
-    const attendees = await prismaClient.attendee.findMany({});
+    const attendees = await prismaClient.attendee.findMany({
+      orderBy: {
+        sequence: "asc",
+      },
+    });
 
     return NextResponse.json(attendees);
   } catch (error) {
@@ -34,15 +38,17 @@ export async function POST(req: Request) {
     //   return new NextResponse("Unauthenticated!!", { status: 401 });
     // }
 
-    const { name } = await req.json();
+    const { name, sequence } = await req.json();
 
-    if (!name) {
+    if (!name || !sequence) {
       return new NextResponse("Some input data is missing!!", { status: 400 });
     }
+
 
     const attendee = await prismaClient.attendee.create({
       data: {
         name,
+        sequence,
       },
     });
 

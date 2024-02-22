@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcrypt";
 
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../../pages/api/auth/[...nextauth]";
@@ -48,7 +47,7 @@ export async function PATCH(
   try {
     const { attendeeId } = params;
 
-    const { name } = await req.json();
+    const { name, sequence } = await req.json();
 
     const session = await getServerSession(authOptions);
 
@@ -60,7 +59,7 @@ export async function PATCH(
       return new NextResponse("attendee Id is required", { status: 400 });
     }
 
-    if (!name) {
+    if (!name || !sequence) {
       return new NextResponse("Some input data is missing!!", { status: 400 });
     }
 
@@ -74,18 +73,21 @@ export async function PATCH(
       return new NextResponse("attendee not found", { status: 400 });
     }
 
+    const sequenceInt = parseInt(sequence, 10);
+
     const attendee = await prismaClient.attendee.updateMany({
       where: {
         id: attendeeId,
       },
       data: {
         name,
+        sequence: sequenceInt,
       },
     });
 
     return NextResponse.json(attendee, { status: 200 });
   } catch (error) {
-    console.log("[attendee_PATCH]", error);
+    console.log("[ATTENDEE_PATCH]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }
@@ -107,15 +109,15 @@ export async function DELETE(
       return new NextResponse("attendee Id is required", { status: 400 });
     }
 
-    const department = await prismaClient.attendee.deleteMany({
+    const department = await prismaClient.attendee.delete({
       where: {
         id: attendeeId,
       },
     });
 
     return NextResponse.json(department, { status: 200 });
-  } catch (error) {
-    console.log("[attendee_DELETE]", error);
-    return new NextResponse("Internal error", { status: 500 });
+  } catch (error: any) {
+    console.error("[ATTENDEE_DELETE]", error);
+    return new NextResponse(error, { status: 500 });
   }
 }

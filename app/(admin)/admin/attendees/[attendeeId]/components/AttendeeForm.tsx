@@ -31,6 +31,7 @@ import { ClipLoader } from "react-spinners";
 
 const formSchema = z.object({
   name: z.string().min(1),
+  sequence: z.string().transform((value) => parseInt(value)),
 });
 
 type AttendeeFormValues = z.infer<typeof formSchema>;
@@ -68,6 +69,7 @@ const AttendeeForm: FC<AttendeeFormPops> = ({ initialData }) => {
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
       name: "",
+      sequence: 0,
     },
   });
 
@@ -190,6 +192,24 @@ const AttendeeForm: FC<AttendeeFormPops> = ({ initialData }) => {
                     <Input
                       disabled={loading}
                       placeholder="Name of user"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="sequence"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Sequence</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={loading}
+                      placeholder="Enter sequence"
+                      type="number"
                       {...field}
                     />
                   </FormControl>

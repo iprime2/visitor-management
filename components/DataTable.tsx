@@ -27,12 +27,16 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   searchKey: string;
+  updateClosed?: () => void;
+  loading?: boolean;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   searchKey,
+  updateClosed,
+  loading,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
@@ -60,7 +64,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="flex flex-col gap-2">
-      <div>
+      <div className="flex items-center justify-between">
         <Input
           placeholder="Search"
           value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
@@ -69,6 +73,9 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
+        <Button disabled={loading} onClick={updateClosed}>
+          Close All
+        </Button>
       </div>
       <div className="rounded-md border">
         <Table>

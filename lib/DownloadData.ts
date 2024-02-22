@@ -1,7 +1,6 @@
 import * as XLSX from "xlsx";
 
 import { toast } from "@/components/ui/use-toast";
-import { ToastAction } from "@/components/ui/toast";
 
 export default function downloadData(
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,

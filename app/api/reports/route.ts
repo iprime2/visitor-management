@@ -6,7 +6,7 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
 export async function POST(req: Request) {
   try {
-    const { fromDate, toDate } = await req.json();
+    const { fromDate, toDate, visitorType } = await req.json();
 
     const session = await getServerSession(authOptions);
 
@@ -14,13 +14,24 @@ export async function POST(req: Request) {
       return new NextResponse("Unauthenticated!!", { status: 401 });
     }
 
-    const visitors = await prismaClient.visitors.findMany({
-      where: {
-        createdAt: {
-          gte: new Date(fromDate),
-          lte: new Date(toDate),
-        },
+    let whereCondition: any = {
+      createdAt: {
+        gte: new Date(fromDate),
+        lte: new Date(toDate),
       },
+    };
+
+    if (visitorType.length > 0) {
+      whereCondition = {
+        ...whereCondition,
+        type: {
+          equals: visitorType,
+        },
+      };
+    }
+
+    const visitors = await prismaClient.visitors.findMany({
+      where: whereCondition,
       orderBy: {
         createdAt: "desc",
       },

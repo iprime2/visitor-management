@@ -16,20 +16,20 @@ const VisitorsPage = async () => {
 
   return (
     <BodyWrapper>
-      <div className="flex flex-col gap-2">
+      {/* <div className="flex flex-col gap-2">
         <Heading
           title="Welcome To MIT-WPU"
           description="Please fill your details."
         />
         <Separator />
-      </div>
+      </div> */}
       <div>
         <EntryForm attendees={attendees} type="public" />
       </div>
-      <Separator />
+      {/* <Separator />
       <div className="flex items-center justify-center text-2xl text-bold">
         Thank you for visiting MIT-WPU!
-      </div>
+      </div> */}
     </BodyWrapper>
   );
 };

@@ -8,6 +8,7 @@ import CellAction from "@/components/CellAction";
 export type AttendeeColumnType = {
   id: string;
   name: string;
+  sequence: string;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -18,6 +19,11 @@ export const columns:
   {
     accessorKey: "name",
     header: "Name",
+  },
+  {
+    accessorKey: "sequence",
+    header: "Sequence",
+    cell: ({ row }) => <div className="flex pl-6">{row.original.sequence}</div>,
   },
   {
     accessorKey: "createdAt",

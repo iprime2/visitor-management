@@ -7,7 +7,7 @@ import axios from "axios";
 import Heading from "@/components/Heading";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { columns } from "./components/columns";
+import { FeedbacksColumnType, columns } from "./components/columns";
 import { DataTable } from "@/components/DataTable";
 import BodyWrapper from "@/components/BodyWrapper";
 import { toast } from "@/components/ui/use-toast";
@@ -18,7 +18,7 @@ import downloadData from "@/lib/DownloadData";
 import { DateRange } from "react-day-picker";
 
 const FeedbacksPage = () => {
-  const [feedbacks, setFeedbacks] = useState();
+  const [feedbacks, setFeedbacks] = useState<FeedbacksColumnType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [date, setDate] = useState<DateRange | any | undefined>({
     from: new Date(),
@@ -70,6 +70,16 @@ const FeedbacksPage = () => {
     return null;
   }
 
+  const downloadDataFn = () => {
+    const finalData = feedbacks?.map((item: any) => ({
+      visitorPrn: item.visitor?.visitorName,
+      visitorName: item.visitor?.visitorPrn,
+      message: item.message,
+      rating: item.rating,
+    }));
+    downloadData(setLoading, "visitors", finalData);
+  };
+
   return (
     <BodyWrapper>
       <div className="w-full flex flex-col gap-3">
@@ -85,7 +95,7 @@ const FeedbacksPage = () => {
           </Button>
           <Button
             className="w-full"
-            onClick={() => downloadData(setLoading, "feedbacks", feedbacks)}
+            onClick={() => downloadDataFn()}
             disabled={loading}
           >
             Download
@@ -105,7 +115,7 @@ const FeedbacksPage = () => {
             <DataTable
               columns={columns}
               data={feedbacks}
-              searchKey="visitorPrn"
+              searchKey="visitorName"
             />
           ) : (
             <h3>Select The Date!!</h3>

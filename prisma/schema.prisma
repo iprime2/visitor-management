@@ -35,6 +35,7 @@ model Data {
 model Attendee {
   id        String   @id @default(uuid())
   name      String
+  sequence  Int      @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -54,6 +55,8 @@ model Visitors {
   attendeeId  String
   attendee    Attendee  @relation("visitorToAttendee", fields: [attendeeId], references: [id])
   query       String
+  status      String    @default("open")
+  remark      String?
   in          Boolean   @default(true)
   out         Boolean   @default(false)
   inTime      DateTime  @default(now())
