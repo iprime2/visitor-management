@@ -5,6 +5,9 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Visitors } from "@prisma/client";
 import { cn } from "@/lib/utils";
 import SelectAttendee from "./SelectAttendee";
+import { Input } from "./ui/input";
+import RemarkInput from "./RemarkInput";
+import RemarkWrapper from "./RemarkWrapper";
 
 export const visitorColumns: ColumnDef<Visitors>[] = [
   {
@@ -81,7 +84,13 @@ export const visitorColumns: ColumnDef<Visitors>[] = [
     accessorKey: "remark",
     header: "Remark",
     cell: ({ row }) => (
-      <div className="flex">{row.original?.remark || "NAN"}</div>
+      <div className="flex">
+        {/* {row.original?.remark ? (
+          row.original?.remark
+        ) : ( */}
+        <RemarkWrapper visitorId={row.original?.id} />
+        {/* )} */}
+      </div>
     ),
   },
   {

@@ -23,24 +23,21 @@ const Navbar: FC<NavbarPropsType> = ({ type }) => {
   return (
     <div
       className={cn(
-        "w-full h-[80px] py-2 shadow-md flex",
-        type === "admin" &&
-          "sm:items-center sm:justify-between md:px-4 sm:px-1",
-        type === "public" && "items-center justify-between px-4"
+        "w-full h-[100px] py-2 shadow-md flex gap-2 items-center md:justify-between px-4",
+        type === "admin" && "md:items-start"
       )}
     >
-      <div>
+      <div className={cn("w-full", type === "admin" && "md:hidden")}>
         <Link
           href="/"
           className={cn(
-            type === "admin" &&
-              "sm:items-center sm:justify-center md:hidden sm:flex sm:w-auto",
-            type === "public" && "flex items-center"
+            "w-auto flex items-center",
+            type === "admin" && "md:hidden items-start justify-start"
           )}
         >
           <Image
             src={logoImage}
-            className="ml-4 cursor-pointer object-contain md:w-[260px] md:h-[55px] sm:w-[120px] sm:h-[35px]"
+            className="ml-4 cursor-pointer object-contain md:w-[350px] md:h-[55px] sm:w-[120px] sm:h-[35px]"
             alt="logo"
             width={120}
             height={35}
@@ -50,10 +47,10 @@ const Navbar: FC<NavbarPropsType> = ({ type }) => {
       <div
         className={cn(
           "flex items-center h-full w-full",
-          type === "public" && "md:pr-[220px] justify-center"
+          type === "public" && "md:mr-[500px]"
         )}
       >
-        <p className="font-bold sm:text-md md:text-xl lg:text-2xl">
+        <p className="font-bold sm:text-md md:text-2xl lg:text-4xl">
           Visitor Management System
         </p>
       </div>

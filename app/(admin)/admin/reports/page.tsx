@@ -112,7 +112,7 @@ const ReportsPage = () => {
   const updateClosed = async () => {
     setLoading(true);
     try {
-      const res = await axios.post(`/api/reports/closed`);
+      const res = await axios.post(`/api/visitors/closed`);
       console.log(res.data);
       toast({
         description: "Data Fetched",

@@ -27,7 +27,7 @@ const AdminVisitorsPage = async () => {
         </div>
         <Separator />
         <div className="mt-4">
-          <EntryForm attendees={attendees} type="public" />
+          <EntryForm attendees={attendees} type="admin" />
         </div>
       </div>
     </BodyWrapper>
