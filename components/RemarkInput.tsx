@@ -16,10 +16,11 @@ type RemarkInputProps = {
   visitorId: string;
   initialData: { remark: string };
   setEdit: React.Dispatch<React.SetStateAction<boolean>>;
+  fetchData: () => void;
 };
 
 const remarkFormSchema = z.object({
-  remark: z.string().min(1),
+  remark: z.string(),
 });
 
 type RemarkFormValues = z.infer<typeof remarkFormSchema>;
@@ -28,6 +29,7 @@ const RemarkInput: FC<RemarkInputProps> = ({
   visitorId,
   initialData,
   setEdit,
+  fetchData,
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
@@ -53,6 +55,7 @@ const RemarkInput: FC<RemarkInputProps> = ({
       });
       setEdit(false);
       router.refresh();
+      fetchData();
     } catch (error: any) {
       console.log(error);
       if (error.response.data) {
@@ -75,7 +78,7 @@ const RemarkInput: FC<RemarkInputProps> = ({
   };
 
   return (
-    <div className="w-[140px]">
+    <div className="w-full p-1">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

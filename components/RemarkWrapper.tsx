@@ -10,7 +10,9 @@ type RemarkWrapperProps = {
 };
 
 const RemarkWrapper: FC<RemarkWrapperProps> = ({ visitorId, remark }) => {
-  const [initialData, setInitialData] = useState(null);
+  const [initialData, setInitialData] = useState<{ remark: string } | null>(
+    null
+  );
   const [loading, setLoading] = useState<boolean>(false);
   const [mounted, setMounted] = useState<boolean>(false);
   const [edit, setEdit] = useState(false);
@@ -42,9 +44,18 @@ const RemarkWrapper: FC<RemarkWrapperProps> = ({ visitorId, remark }) => {
 
   return (
     <>
-      {!edit && (
+      {loading && (
+        <ClipLoader
+          loading={loading}
+          size={20}
+          aria-label="Loading Spinner"
+          data-testid="loader"
+        />
+      )}
+
+      {!loading && !edit && (
         <div className="flex item-center justify-between w-[90%] h-auto">
-          {remark}
+          {initialData ? initialData?.remark : remark}
           <PencilIcon
             size={16}
             className="hover:cursor-pointer hover:text-grey-200 transition-all"
@@ -53,11 +64,12 @@ const RemarkWrapper: FC<RemarkWrapperProps> = ({ visitorId, remark }) => {
         </div>
       )}
 
-      {edit && initialData && (
+      {!loading && edit && initialData && (
         <RemarkInput
           visitorId={visitorId}
           initialData={initialData}
           setEdit={setEdit}
+          fetchData={fetchData}
         />
       )}
     </>

@@ -49,7 +49,7 @@ export const visitorColumns: ColumnDef<Visitors>[] = [
     accessorKey: "query",
     header: "Query",
     cell: ({ row }) => (
-      <div className="flex">
+      <div className="flex w-[160px] h-auto overflow-hidden">
         {row.original.query ? row.original.query : "NAN"}
       </div>
     ),
@@ -82,7 +82,7 @@ export const visitorColumns: ColumnDef<Visitors>[] = [
     accessorKey: "remark",
     header: "Remark",
     cell: ({ row }) => (
-      <div className="flex w-[200px] h-auto">
+      <div className="flex w-[200px] h-auto overflow-hidden">
         <RemarkWrapper
           visitorId={row.original?.id}
           remark={row.original.remark}
