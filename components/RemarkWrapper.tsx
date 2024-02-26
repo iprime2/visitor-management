@@ -6,7 +6,7 @@ import { PencilIcon } from "lucide-react";
 
 type RemarkWrapperProps = {
   visitorId: string;
-  remark: string;
+  remark: string | null;
 };
 
 const RemarkWrapper: FC<RemarkWrapperProps> = ({ visitorId, remark }) => {
