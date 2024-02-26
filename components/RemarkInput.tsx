@@ -14,7 +14,8 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/form";
 
 type RemarkInputProps = {
   visitorId: string;
-  initialData?: { remark: string } | null;
+  initialData: { remark: string };
+  setEdit: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const remarkFormSchema = z.object({
@@ -23,46 +24,21 @@ const remarkFormSchema = z.object({
 
 type RemarkFormValues = z.infer<typeof remarkFormSchema>;
 
-const RemarkInput: FC<RemarkInputProps> = ({ visitorId, initialData }) => {
+const RemarkInput: FC<RemarkInputProps> = ({
+  visitorId,
+  initialData,
+  setEdit,
+}) => {
   const [loading, setLoading] = useState<boolean>(false);
-  //   const router = useRouter();
-  //   const [initialData, setInitialData] = useState(null);
-
-  //   useEffect(() => {
-  //     fetchData();
-  //   }, []);
-
-  //   const fetchData = async () => {
-  //     setLoading(true);
-  //     try {
-  //       const res = await axios.get(`/api/visitors/remark/${visitorId}`);
-  //       console.log(res.data);
-  //       setInitialData(res.data);
-  //     } catch (error: any) {
-  //       console.log(error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  if (initialData) {
-    console.log(initialData);
-  }
-  // console.log(initialData);
+  const router = useRouter();
 
   const form = useForm<RemarkFormValues>({
     resolver: zodResolver(remarkFormSchema),
-    defaultValues: initialData
-      ? initialData
-      : {
-          remark: "check",
-        },
+    defaultValues: initialData,
   });
 
   const onSubmit = async (data: RemarkFormValues) => {
     setLoading(true);
-
-    console.log(data);
 
     const finalData = {
       visitorId: visitorId,
@@ -75,7 +51,8 @@ const RemarkInput: FC<RemarkInputProps> = ({ visitorId, initialData }) => {
         description: "Remark Saved!",
         variant: "success",
       });
-      //   router.refresh();
+      setEdit(false);
+      router.refresh();
     } catch (error: any) {
       console.log(error);
       if (error.response.data) {
