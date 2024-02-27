@@ -1,6 +1,6 @@
 "use client";
 
-import { format, formatDistanceToNow } from "date-fns";
+import { differenceInMinutes, format, formatDistanceToNow } from "date-fns";
 import { ColumnDef } from "@tanstack/react-table";
 import { Visitors } from "@prisma/client";
 import { cn } from "@/lib/utils";
@@ -83,10 +83,7 @@ export const visitorColumns: ColumnDef<Visitors>[] = [
     header: "Remark",
     cell: ({ row }) => (
       <div className="flex w-[200px] h-auto overflow-hidden">
-        <RemarkWrapper
-          visitorId={row.original?.id}
-          remark={row.original.remark}
-        />
+        <RemarkWrapper visitorId={row.original?.id} />
       </div>
     ),
   },
@@ -116,8 +113,9 @@ export const visitorColumns: ColumnDef<Visitors>[] = [
           row.original.outTime ? "bg-green-500" : "bg-red-500"
         )}
       >
-        {row.original.inTime
-          ? formatDistanceToNow(row.original.inTime)
+        {row.original.inTime && row.original.outTime
+          ? differenceInMinutes(row.original.outTime, row.original.inTime) +
+            " minutes"
           : "not checked out"}
       </div>
     ),

@@ -6,10 +6,9 @@ import { PencilIcon } from "lucide-react";
 
 type RemarkWrapperProps = {
   visitorId: string;
-  remark: string | null;
 };
 
-const RemarkWrapper: FC<RemarkWrapperProps> = ({ visitorId, remark }) => {
+const RemarkWrapper: FC<RemarkWrapperProps> = ({ visitorId }) => {
   const [initialData, setInitialData] = useState<{ remark: string } | null>(
     null
   );
@@ -54,8 +53,10 @@ const RemarkWrapper: FC<RemarkWrapperProps> = ({ visitorId, remark }) => {
       )}
 
       {!loading && !edit && (
-        <div className="flex item-center justify-between w-[90%] h-auto">
-          {initialData ? initialData?.remark : remark}
+        <div className="flex item-center justify-evenly w-[90%] h-auto">
+          <p className="w-full">
+            {(initialData && initialData?.remark) || "No Remark!"}
+          </p>
           <PencilIcon
             size={16}
             className="hover:cursor-pointer hover:text-grey-200 transition-all"

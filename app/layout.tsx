@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Roboto } from "next/font/google";
 import cron from "node-cron";
 
 import "./globals.css";
@@ -8,7 +8,10 @@ import Provider from "@/providers/Provider";
 import FeedbackModal from "@/components/modal/FeedbackModal";
 import { updateOutTime } from "@/lib/updateOutTimeCornJob";
 
-const inter = Inter({ subsets: ["latin"] });
+const roboto = Roboto({
+  weight: "400",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Visitor Management",
@@ -29,7 +32,7 @@ export default function RootLayout({
       <Provider>
         <Toaster />
         <FeedbackModal />
-        <body className={inter.className}>{children}</body>
+        <body className={roboto.className}>{children}</body>
       </Provider>
     </html>
   );
