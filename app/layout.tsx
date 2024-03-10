@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 import Provider from "@/providers/Provider";
 import FeedbackModal from "@/components/modal/FeedbackModal";
 import { updateOutTime } from "@/lib/updateOutTimeCornJob";
+import FileUploadModal from "@/components/modal/FileUploadModal";
 
 const roboto = Roboto({
   weight: "400",
@@ -32,6 +33,7 @@ export default function RootLayout({
       <Provider>
         <Toaster />
         <FeedbackModal />
+        <FileUploadModal />
         <body className={roboto.className}>{children}</body>
       </Provider>
     </html>

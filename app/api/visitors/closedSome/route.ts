@@ -6,6 +6,7 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
 export async function POST(req: Request) {
   try {
+    const { closeVisitorId } = await req.json();
     const session = await getServerSession(authOptions);
 
     if (!session) {
@@ -14,7 +15,9 @@ export async function POST(req: Request) {
 
     const visitors = await prismaClient.visitors.updateMany({
       where: {
-        status: "open",
+        id: {
+          in: closeVisitorId,
+        },
       },
       data: {
         status: "closed",
@@ -23,7 +26,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(visitors, { status: 200 });
   } catch (error) {
-    console.log("[CLOSED_POST_ERROR]");
+    console.log("[CLOSEDSOME_POST_ERROR]");
     console.error("Error:", error);
   }
 }

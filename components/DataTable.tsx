@@ -27,7 +27,7 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   searchKey: string;
-  updateClosed?: () => void;
+  updateClosed?: (rowSelection: any) => void;
   loading?: boolean;
 }
 
@@ -39,6 +39,7 @@ export function DataTable<TData, TValue>({
   loading,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
     data,
@@ -47,8 +48,10 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    onRowSelectionChange: setRowSelection,
     state: {
       columnFilters,
+      rowSelection,
     },
   });
 
@@ -73,7 +76,10 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
-        <Button disabled={loading} onClick={updateClosed}>
+        <Button
+          disabled={loading}
+          onClick={() => updateClosed && updateClosed(rowSelection)}
+        >
           Close All
         </Button>
       </div>

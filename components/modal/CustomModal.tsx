@@ -4,6 +4,7 @@ import { FC, useCallback, useEffect, useState } from "react";
 import { X } from "lucide-react";
 
 import { FeedbackFormValues } from "./FeedbackModal";
+import { FileUploadFormValues } from "./FileUploadModal";
 
 interface CustomModalProps {
   isOpen: boolean;
@@ -12,7 +13,8 @@ interface CustomModalProps {
   body?: React.ReactElement;
   footer?: React.ReactElement;
   disabled?: boolean;
-  onSubmit: (data: FeedbackFormValues) => void;
+  // onSubmit: (data: FeedbackFormValues | FileUploadFormValues) => void | any;
+  onSubmit: any;
 }
 
 const CustomModal: FC<CustomModalProps> = ({

@@ -6,7 +6,7 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
 export async function POST(req: Request) {
   try {
-    const { fromDate, toDate, visitorType } = await req.json();
+    const { fromDate, toDate, visitorType, statusType } = await req.json();
 
     const session = await getServerSession(authOptions);
 
@@ -21,11 +21,20 @@ export async function POST(req: Request) {
       },
     };
 
-    if (visitorType.length > 0) {
+    if (visitorType && visitorType !== "all") {
       whereCondition = {
         ...whereCondition,
         type: {
           equals: visitorType,
+        },
+      };
+    }
+
+    if (statusType && statusType !== "all") {
+      whereCondition = {
+        ...whereCondition,
+        status: {
+          equals: statusType,
         },
       };
     }

@@ -6,11 +6,31 @@ import { Visitors } from "@prisma/client";
 import { cn } from "@/lib/utils";
 import SelectAttendee from "./SelectAttendee";
 import RemarkWrapper from "./RemarkWrapper";
+import { Checkbox } from "./ui/checkbox";
+import { FileTextIcon } from "lucide-react";
 
 export const visitorColumns: ColumnDef<Visitors>[] = [
   {
-    accessorKey: "visitorId",
-    header: "S.No",
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
   },
   {
     accessorKey: "visitorPrn",
@@ -84,6 +104,15 @@ export const visitorColumns: ColumnDef<Visitors>[] = [
     cell: ({ row }) => (
       <div className="flex w-[200px] h-auto overflow-hidden">
         <RemarkWrapper visitorId={row.original?.id} />
+      </div>
+    ),
+  },
+  {
+    accessorKey: "fileUpload",
+    header: "Document",
+    cell: ({ row }) => (
+      <div className="flex items-center justify-center">
+        <FileTextIcon />
       </div>
     ),
   },

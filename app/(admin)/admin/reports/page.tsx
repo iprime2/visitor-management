@@ -25,6 +25,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { FormDescription } from "@/components/ui/form";
+import { useFileUploadModal } from "@/hooks/useFileUploadModal";
+
+type rowSelectionType = {
+  [key: number]: boolean;
+};
 
 const ReportsPage = () => {
   const [visitors, setVisitors] = useState<Visitors[]>([]);
@@ -33,8 +39,10 @@ const ReportsPage = () => {
     from: new Date(),
     to: new Date(),
   });
-  const [visitorType, setVisitorType] = useState<string>("");
+  const [visitorType, setVisitorType] = useState<string>("all");
+  const [statusType, setStatusType] = useState<string>("all");
   const [mounted, setMounted] = useState<boolean>(false);
+  const fileUploadModal = useFileUploadModal();
 
   useEffect(() => {
     setMounted(true);
@@ -42,6 +50,8 @@ const ReportsPage = () => {
   }, []);
 
   useEffect(() => {
+    fileUploadModal.onOpen("null");
+
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -55,6 +65,7 @@ const ReportsPage = () => {
       fromDate,
       toDate,
       visitorType,
+      statusType,
     };
     try {
       const res = await axios.post(`/api/reports`, finalDate);
@@ -109,15 +120,33 @@ const ReportsPage = () => {
     downloadData(setLoading, "visitors", finalData);
   };
 
-  const updateClosed = async () => {
+  const updateClosed = async (rowSelection: rowSelectionType) => {
     setLoading(true);
+
     try {
-      const res = await axios.post(`/api/visitors/closed`);
-      console.log(res.data);
-      toast({
-        description: "Data Fetched",
-        variant: "success",
-      });
+      let response;
+      if (Object.keys(rowSelection)?.length > 0) {
+        let closeVisitorId = [];
+        for (const key in rowSelection) {
+          if (Object.prototype.hasOwnProperty.call(rowSelection, key)) {
+            if (key) {
+              closeVisitorId.push(visitors[key].id);
+            }
+          }
+        }
+        response = await axios.post(`/api/visitors/closedSome`, {
+          closeVisitorId,
+        });
+      } else {
+        response = await axios.post(`/api/visitors/closed`);
+      }
+
+      if (response?.status === 200) {
+        toast({
+          description: "Data Fetched",
+          variant: "success",
+        });
+      }
       fetchData();
     } catch (error: any) {
       console.error(error);
@@ -138,10 +167,15 @@ const ReportsPage = () => {
           <Heading title="Reports" description="Manage Reports" />
         </div>
         <Separator />
-        <p className="md:text-xl lg:text2xl sm:text-md">Select Date</p>
         <div className="flex flex-col md:flex-row gap-4 w-full">
-          <DatePickerWithRange date={date} setDate={setDate} />
           <div className="w-full">
+            <p className="md:text-md lg:text-lg sm:text-sm">Select Date</p>
+            <DatePickerWithRange date={date} setDate={setDate} />
+          </div>
+          <div className="w-full">
+            <p className="md:text-md lg:text-lg sm:text-sm">
+              Select category type
+            </p>
             <Select
               onValueChange={(value) => setVisitorType(value)}
               defaultValue={visitorType}
@@ -152,6 +186,7 @@ const ReportsPage = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
+                  <SelectItem value="all">All</SelectItem>
                   <SelectItem value="student">Student</SelectItem>
                   <SelectItem value="employee">Employee</SelectItem>
                   <SelectItem value="visitor">Visitor</SelectItem>
@@ -159,16 +194,44 @@ const ReportsPage = () => {
               </SelectContent>
             </Select>
           </div>
-          <Button className="w-full" onClick={fetchData} disabled={loading}>
-            Submit
-          </Button>
-          <Button
-            className="w-full"
-            onClick={() => downloadDataFn()}
-            disabled={loading}
-          >
-            Download
-          </Button>
+          <div className="w-full">
+            <p className="md:text-md lg:text-lg sm:text-sm">
+              Select status type
+            </p>
+            <Select
+              onValueChange={(value) => setStatusType(value)}
+              defaultValue={statusType}
+              disabled={loading}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a status type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="open">Open</SelectItem>
+                  <SelectItem value="closed">Closed</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="w-full flex flex-col">
+            <p className="w-full md:text-md lg:text-lg sm:text-sm">
+              Click to process{" "}
+            </p>
+            <div className="w-full flex flex-row gap-2">
+              <Button className="w-full" onClick={fetchData} disabled={loading}>
+                Submit
+              </Button>
+              <Button
+                className="w-full"
+                onClick={() => downloadDataFn()}
+                disabled={loading}
+              >
+                Download
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
       <div className="w-full">
