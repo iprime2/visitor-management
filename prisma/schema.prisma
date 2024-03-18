@@ -65,6 +65,7 @@ model Visitors {
   updatedAt   DateTime  @updatedAt
 
   feedback   Feedback[] @relation("feedbacktovisitor")
+  files      Files[]     @relation("FilesToVisitors")
 }
 
 model Feedback {
@@ -75,4 +76,14 @@ model Feedback {
   visitor     Visitors  @relation("feedbacktovisitor", fields: [visitorId], references: [id])
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+}
+
+model Files {
+  id          String    @id @unique @default(uuid())
+  fileName    String
+  filePath    String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  visitorId   String
+  visitors    Visitors  @relation("FilesToVisitors", fields: [visitorId], references: [id])
 }

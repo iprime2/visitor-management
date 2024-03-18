@@ -8,8 +8,10 @@ import SelectAttendee from "./SelectAttendee";
 import RemarkWrapper from "./RemarkWrapper";
 import { Checkbox } from "./ui/checkbox";
 import { FileTextIcon } from "lucide-react";
+import { useFileUploadModalProps } from "@/hooks/useFileUploadModal";
 
-export const visitorColumns: ColumnDef<Visitors>[] = [
+export const getVisitorColumns = (fileUploadModal: useFileUploadModalProps) => {
+ const visitorColumns: ColumnDef<Visitors>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -111,7 +113,7 @@ export const visitorColumns: ColumnDef<Visitors>[] = [
     accessorKey: "fileUpload",
     header: "Document",
     cell: ({ row }) => (
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center cursor-pointer hover:text-fuchsia-700" onClick={() => fileUploadModal.onOpen(row.original.id)}>
         <FileTextIcon />
       </div>
     ),
@@ -159,3 +161,7 @@ export const visitorColumns: ColumnDef<Visitors>[] = [
     ),
   },
 ];
+  return visitorColumns;
+};
+
+export default getVisitorColumns;

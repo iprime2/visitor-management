@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-interface useFileUploadModalProps {
+export interface useFileUploadModalProps {
   isOpen: boolean;
   visitorId: string | null | undefined;
   onOpen: (visitorId: string) => void;

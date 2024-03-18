@@ -39,15 +39,14 @@ const CustomModal: FC<CustomModalProps> = ({
   }, [isOpen]);
 
   const handleClose = useCallback(() => {
-    if (disabled) {
-      return;
-    }
-
-    setShowCustomModal(false);
-    // setTimeout(() => {
+  if (disabled) {
+    return;
+  }
+  setShowCustomModal(false);
+  setTimeout(() => {
     onClose();
-    // }, 300);
-  }, [disabled, onClose]);
+  }, 300);
+}, [disabled, onClose]);
 
   if (!mounted) {
     return null;

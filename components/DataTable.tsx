@@ -28,6 +28,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   searchKey: string;
   updateClosed?: (rowSelection: any) => void;
+  downloadDataFn?: () => void;
   loading?: boolean;
 }
 
@@ -36,6 +37,7 @@ export function DataTable<TData, TValue>({
   data,
   searchKey,
   updateClosed,
+  downloadDataFn,
   loading,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -67,21 +69,31 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col items-center md:justify-between sm:flex-row gap-2">
         <Input
           placeholder="Search"
           value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn(searchKey)?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="md:max-w-sm sm:w-full"
         />
-        <Button
-          disabled={loading}
-          onClick={() => updateClosed && updateClosed(rowSelection)}
-        >
-          Close All
-        </Button>
+        <div className="flex gap-2 md:w-[30%] lg:w-md w-full">
+          <Button
+            className="w-full"
+            disabled={loading}
+            onClick={() => updateClosed && updateClosed(rowSelection)}
+          >
+            Close All
+          </Button>
+          <Button
+            className="w-full"
+            onClick={() => downloadDataFn && downloadDataFn()}
+            disabled={loading}
+          >
+            Download
+          </Button>
+        </div>
       </div>
       <div className="rounded-md border">
         <Table>

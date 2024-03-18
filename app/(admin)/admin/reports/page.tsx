@@ -11,7 +11,8 @@ import { DatePickerWithRange } from "@/components/DatePickerWithRange";
 import { Button } from "@/components/ui/button";
 import ClipLoader from "react-spinners/ClipLoader";
 import { DataTable } from "@/components/DataTable";
-import { visitorColumns } from "@/components/visitorsColumns";
+// import { visitorColumns } from "@/components/visitorsColumns";
+import getVisitorColumns from "@/components/visitorsColumns";
 import downloadData from "@/lib/DownloadData";
 import Heading from "@/components/Heading";
 import { Separator } from "@/components/ui/separator";
@@ -43,6 +44,7 @@ const ReportsPage = () => {
   const [statusType, setStatusType] = useState<string>("all");
   const [mounted, setMounted] = useState<boolean>(false);
   const fileUploadModal = useFileUploadModal();
+  const columns: any = getVisitorColumns(fileUploadModal);
 
   useEffect(() => {
     setMounted(true);
@@ -50,11 +52,11 @@ const ReportsPage = () => {
   }, []);
 
   useEffect(() => {
-    fileUploadModal.onOpen("null");
-
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  console.log(process.env.UPLOAD_API_URL);
 
   const fetchData = async () => {
     setLoading(true);
@@ -115,6 +117,7 @@ const ReportsPage = () => {
         remark,
         inTime,
         outTime,
+        feedbackUrl: `${process.env.FEEDBACK_URL}/${visitorId}`,
       })
     );
     downloadData(setLoading, "visitors", finalData);
@@ -167,15 +170,13 @@ const ReportsPage = () => {
           <Heading title="Reports" description="Manage Reports" />
         </div>
         <Separator />
-        <div className="flex flex-col md:flex-row gap-4 w-full">
+        <div className="lg:flex md:gap-4 sm:gap-4 w-full lg:flex-row flex-row">
           <div className="w-full">
             <p className="md:text-md lg:text-lg sm:text-sm">Select Date</p>
             <DatePickerWithRange date={date} setDate={setDate} />
           </div>
           <div className="w-full">
-            <p className="md:text-md lg:text-lg sm:text-sm">
-              Select category type
-            </p>
+            <p className="md:text-md lg:text-lg sm:text-sm">Select category</p>
             <Select
               onValueChange={(value) => setVisitorType(value)}
               defaultValue={visitorType}
@@ -195,9 +196,7 @@ const ReportsPage = () => {
             </Select>
           </div>
           <div className="w-full">
-            <p className="md:text-md lg:text-lg sm:text-sm">
-              Select status type
-            </p>
+            <p className="md:text-md lg:text-lg sm:text-sm">Select status</p>
             <Select
               onValueChange={(value) => setStatusType(value)}
               defaultValue={statusType}
@@ -219,21 +218,15 @@ const ReportsPage = () => {
             <p className="w-full md:text-md lg:text-lg sm:text-sm">
               Click to process{" "}
             </p>
-            <div className="w-full flex flex-row gap-2">
+            <div className="w-full">
               <Button className="w-full" onClick={fetchData} disabled={loading}>
                 Submit
-              </Button>
-              <Button
-                className="w-full"
-                onClick={() => downloadDataFn()}
-                disabled={loading}
-              >
-                Download
               </Button>
             </div>
           </div>
         </div>
       </div>
+      <Separator />
       <div className="w-full">
         {loading ? (
           <div className="w-full h-auto md:p-3 mt-4 flex items-center justify-center">
@@ -246,10 +239,11 @@ const ReportsPage = () => {
           </div>
         ) : visitors ? (
           <DataTable
-            columns={visitorColumns}
+            columns={columns}
             data={visitors}
             searchKey="visitorName"
             updateClosed={updateClosed}
+            downloadDataFn={downloadDataFn}
             loading={loading}
           />
         ) : (
