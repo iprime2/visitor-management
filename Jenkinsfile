@@ -15,19 +15,19 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'pnpm install'
+                sh 'npm install'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'pnpm run build'
+                sh 'npm run build'
             }
         }
 
         stage('Start Next.js App') {
             steps {
-                sh 'pnpm start'
+                sh 'npm start'
             }
         }
 
