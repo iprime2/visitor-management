@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/iprime2/visitor-management'
+                git branch: 'main', url: 'https://github.com/iprime2/visitor-management'
             }
         }
 
