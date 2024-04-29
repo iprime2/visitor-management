@@ -22,8 +22,8 @@ jobs:
           
       - name: Install dependencies
         run: |
-          npm install
+          pnpm install
 
       - name: Run build
         run: |
-          npm run build
+          pnpm run build
