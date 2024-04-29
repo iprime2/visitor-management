@@ -1,0 +1,35 @@
+name: Main Branch PR Created
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  check_main_branch_pr:
+    if: github.event.pull_request.base.ref == 'main'
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18, 21]
+        
+    steps:
+      - name: Check Main Branch PR
+        run: echo "A pull request was created for the main branch."
+        
+      - uses: actions/checkout@v3
+      - name: Set up Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+          
+      - name: Install dependencies
+        run: |
+          pnpm install
+
+      - name: Run build
+        run: |
+          pnpm run build
