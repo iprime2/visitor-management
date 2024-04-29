@@ -1,4 +1,4 @@
-name: Nest.js CI
+name: Next.js CI
 
 on: [push]
 
