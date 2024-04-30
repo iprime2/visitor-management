@@ -76,8 +76,9 @@ pipeline {
                 }
             }
             steps {
-                sh 'npm ci'
-                sh 'npm run build'
+                sh 'npm i -g pnpm'
+                sh 'pnpm ci'
+                sh 'pnpm run build'
             }
         }
 
@@ -89,8 +90,9 @@ pipeline {
                 }
             }
             steps {
-                sh 'npm ci'
-                sh 'npm run build'
+                sh 'npm i -g pnpm'
+                sh 'pnpm ci'
+                sh 'pnpm run build'
             }
         }
     }
