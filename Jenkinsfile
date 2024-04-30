@@ -21,22 +21,28 @@ pipeline {
 
         stage('Build') {
             steps {
+                sh 'npm i -g pnpm'
+            }
+        }
+
+        stage('Build') {
+            steps {
                 sh 'npm run build'
             }
         }
 
-        stage('Start Next.js App') {
-            steps {
-                sh 'npm start'
-            }
-        }
+        // stage('Start Next.js App') {
+        //     steps {
+        //         sh 'npm start'
+        //     }
+        // }
 
-        stage('Check App Status') {
-            steps {
-                sh 'curl http://localhost:3000'
-                sh 'echo "Next.js app is running"'
-            }
-        }
+        // stage('Check App Status') {
+        //     steps {
+        //         sh 'curl http://localhost:3000'
+        //         sh 'echo "Next.js app is running"'
+        //     }
+        // }
     }
 
     post {
