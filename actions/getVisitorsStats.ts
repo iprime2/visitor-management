@@ -11,6 +11,8 @@ export const getVisitorsStats = async () => {
     return null;
   }
 
+  
+
   try {
     const totalVisitors = await prismaClient.visitors.aggregate({
       _count: {
