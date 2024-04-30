@@ -19,7 +19,7 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Install pnpm') {
             steps {
                 sh 'npm i -g pnpm'
             }
