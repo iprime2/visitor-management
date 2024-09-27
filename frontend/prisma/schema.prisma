@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  password  String
+  isAdmin   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Data {
+  id        String   @id @default(uuid())
+  name      String
+  prn       String
+  mobile    String
+  type      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  record Visitors[] @relation("recordRef")
+}
+
+model Attendee {
+  id        String   @id @default(uuid())
+  name      String
+  sequence  Int      @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  visitor Visitors[] @relation("visitorToAttendee")
+}
+
+model Visitors {
+  id          String    @id @unique @default(uuid())
+  visitorId   Int       @unique @default(autoincrement())
+  dataId      String?
+  student     Data?     @relation("recordRef", fields: [dataId], references: [id])
+  visitorName String
+  visitorPrn  String?
+  mobile      String
+  type        String
+  attendedBy  String
+  attendeeId  String
+  attendee    Attendee  @relation("visitorToAttendee", fields: [attendeeId], references: [id])
+  query       String
+  status      String    @default("open")
+  remark      String?
+  in          Boolean   @default(true)
+  out         Boolean   @default(false)
+  inTime      DateTime  @default(now())
+  outTime     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  feedback   Feedback[] @relation("feedbacktovisitor")
+  files      Files[]     @relation("FilesToVisitors")
+}
+
+model Feedback {
+  id          String    @id @unique @default(uuid())
+  message     String
+  rating      String
+  visitorId   String
+  visitor     Visitors  @relation("feedbacktovisitor", fields: [visitorId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Files {
+  id          String    @id @unique @default(uuid())
+  fileName    String
+  filePath    String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  visitorId   String
+  visitors    Visitors  @relation("FilesToVisitors", fields: [visitorId], references: [id])
+}
