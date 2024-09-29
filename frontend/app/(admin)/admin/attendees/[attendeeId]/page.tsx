@@ -1,25 +1,61 @@
+"use client"
+
 import { FC } from "react";
 
-import Error401 from "@/components/401";
 import AttendeeForm from "./components/AttendeeForm";
-import { getAttendee } from "@/actions/getAttendee";
+import { ToastAction } from "@/components/ui/toast";
+import { toast } from "@/components/ui/use-toast";
+import axiosInstance from "@/lib/axioswrapper";
+import useUserStore from "@/stores/useUserStore";
+import { useEffect, useState } from "react";
 
 interface AttendeePageProps {
   params: { attendeeId: string };
 }
 
-const AttendeePage: FC<AttendeePageProps> = async ({ params }) => {
-  const attendeeId = params.attendeeId;
+const AttendeePage: FC<AttendeePageProps> = ({ params }) => {
+  const [loading, setLoading] = useState(false);
+  const [attendee, setAttendee] = useState(null);
+  const { user } = useUserStore();
 
-  const attendeeData = await getAttendee(attendeeId);
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        setLoading(true);
+        const response = await axiosInstance.get(`/attendees/${params.attendeeId}`);
+        if (response.status === 200) {
+          setAttendee(response.data);
+          toast({
+            title: "Success!",
+            description: "Attendees data fetched!",
+            variant: "success",
+          });
+        }
+      } catch (error: any) {
+        if (error?.response?.data) {
+          toast({
+            title: error?.response?.data?.error,
+            description: error?.response?.data?.message,
+            variant: "destructive",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            description: "Something went wrong!!",
+            variant: "destructive",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  if (attendeeData === "not authorized") {
-    return <Error401 />;
-  }
+    if(params.attendeeId !== "new") fetchUsers();
+  }, []);
 
-  const plainAttendeeData = JSON.parse(JSON.stringify(attendeeData));
 
-  return <AttendeeForm initialData={plainAttendeeData} />;
+  return <AttendeeForm initialData={attendee} />;
 };
 
 export default AttendeePage;

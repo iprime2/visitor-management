@@ -5,8 +5,8 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Trash } from "lucide-react";
-import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
+import { ClipLoader } from "react-spinners";
 
 import { toast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
@@ -24,10 +24,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import AlertModal from "@/components/modal/AlertModal";
-import { useSession } from "next-auth/react";
 import BodyWrapper from "@/components/BodyWrapper";
 import { AttendeeColumnType } from "../../components/columns";
-import { ClipLoader } from "react-spinners";
+import axiosInstance from "@/lib/axioswrapper";
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -54,8 +53,6 @@ const AttendeeForm: FC<AttendeeFormPops> = ({ initialData }) => {
   const params = useParams();
   const router = useRouter();
 
-  const { data: session } = useSession();
-
   const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
@@ -80,15 +77,14 @@ const AttendeeForm: FC<AttendeeFormPops> = ({ initialData }) => {
   const onSubmit = async (data: AttendeeFormValues) => {
     setLoading(true);
     let response;
-
     try {
       if (initialData) {
-        response = await axios.patch(
-          `/api/attendees/${params?.attendeeId}`,
+        response = await axiosInstance.patch(
+          `/attendees/${params?.attendeeId}`,
           data
         );
       } else {
-        response = await axios.post(`/api/attendees`, data);
+        response = await axiosInstance.post(`/attendees`, data);
       }
       router.refresh();
       router.push("/admin/attendees");
@@ -108,8 +104,8 @@ const AttendeeForm: FC<AttendeeFormPops> = ({ initialData }) => {
       console.log(error);
       if (error.response.data) {
         toast({
-          title: error.code,
-          description: error.response.data,
+          title: error.response?.data?.error,
+          description: error.response?.data?.message,
           variant: "destructive",
           action: <ToastAction altText="Try again">Try again</ToastAction>,
         });
@@ -128,19 +124,13 @@ const AttendeeForm: FC<AttendeeFormPops> = ({ initialData }) => {
   const onDelete = async () => {
     setLoading(true);
     try {
-      const response = await axios.delete(`/api/attendees/${params?.userId}`);
+      const response = await axiosInstance.delete(`/attendees/${params?.attendeeId}`);
       router.refresh();
       router.push(`/admin/attendees`);
       if (response.status === 200) {
         toast({
           description: "User Deleted!",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          description: "Something went wrong!!",
-          variant: "destructive",
-          action: <ToastAction altText="Try again">Try again</ToastAction>,
+          variant: "success",
         });
       }
     } catch (error) {

@@ -23,6 +23,7 @@ import { toast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { Separator } from "@/components/ui/separator";
 import Heading from "@/components/Heading";
+import axiosInstance from "@/lib/axioswrapper";
 
 const fileSchema = z.object({
   file: typeof File !== "undefined" ? z.instanceof(File) : z.any(),
@@ -67,36 +68,33 @@ const SettingsPage = () => {
 
     try {
       const jsonData = { seedData: await handleFileConversion(data) };
-      const response = await axios.post("/api/seed", jsonData);
-      console.log(response);
+
+      // Old method for reference (commented out)
+      // const response = await axios.post("/api/seed", jsonData);
+
+      // Refactored to post to the /members/upload route
+      const formData = new FormData();
+      formData.append("file", data.file);
+
+      const response = await axiosInstance.post("/members/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
       if (response.status === 201) {
         toast({
           description: "Data uploaded successfully!",
           variant: "success",
         });
-      } else {
-        toast({
-          description: "Something went wrong!!",
-          variant: "destructive",
-          action: <ToastAction altText="Try again">Try again</ToastAction>,
-        });
       }
     } catch (error: any) {
       console.log(error);
-      if (error.response.data) {
-        const errMessage = error?.response?.data;
-        toast({
-          description: errMessage,
-          variant: "destructive",
-          action: <ToastAction altText="Try again">Try again</ToastAction>,
-        });
-      } else {
-        toast({
-          description: "Something went wrong!!",
-          variant: "destructive",
-          action: <ToastAction altText="Try again">Try again</ToastAction>,
-        });
-      }
+      toast({
+        description: "Something went wrong!!",
+        variant: "destructive",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
     } finally {
       setLoading(false);
     }
@@ -138,7 +136,10 @@ const SettingsPage = () => {
     setLoading(true);
 
     try {
-      const response = await axios.delete("/api/seed");
+      // Old method for reference (commented out)
+      // const response = await axios.delete("/api/seed");
+
+      const response = await axiosInstance.delete("/members/delete-all");
       if (response.status === 200) {
         toast({
           description: "Data deleted successfully!",
@@ -221,11 +222,11 @@ const SettingsPage = () => {
         <div className="w-full h-auto p2">
           <p>
             <span className="font-bold">Note:</span> If you want fresh/new data
-            first Delete prvious data by clicking on Delete Button, Otherwise
-            upload excel file and click on Upload.
+            first Delete previous data by clicking on Delete Button, Otherwise
+            upload the Excel file and click on Upload.
           </p>
           <h3>1. Upload Button upload&apos;s excel file data in Database</h3>
-          <h3>2. Delete Button delete data from Database</h3>
+          <h3>2. Delete Button deletes data from Database</h3>
         </div>
       </div>
     </BodyWrapper>

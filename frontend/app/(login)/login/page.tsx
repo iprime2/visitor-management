@@ -3,7 +3,6 @@
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn, useSession } from "next-auth/react";
 
 import {
   Form,
@@ -24,6 +23,8 @@ import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
 import { ClipLoader } from "react-spinners";
 import Heading from "@/components/Heading";
+import axiosInstance from "@/lib/axioswrapper";
+import useUserStore from "@/stores/useUserStore";
 
 const formSchema = z.object({
   email: z
@@ -38,7 +39,8 @@ type LoginFormValues = z.infer<typeof formSchema>;
 export default function Home() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { data: session } = useSession();
+  const { user, isAuthenticated } = useUserStore();
+  const api_url = process.env.API_URL;
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(formSchema),
@@ -48,32 +50,39 @@ export default function Home() {
     },
   });
 
-  if (session) {
+  if (isAuthenticated || user) {
     router.push("/admin/dashboard");
-    return null;
   }
 
   const onSubmit = async (data: LoginFormValues) => {
     setLoading(true);
     try {
-      const { email, password } = data;
-      await signIn("credentials", {
-        redirect: false,
-        email,
-        password,
-      });
-      router.push("/admin/dashboard");
-      toast({
-        title: "Signed In!",
-        description: "Redirecting to dashboard!",
-        variant: "success",
-      });
-    } catch (error: any) {
-      console.log(error);
-      if (error.response && error.response.data) {
+      const response = await axiosInstance.post('/auth/login', data);
+      if(response.status === 200){
+        const { id, name, email, isAdmin, createdAt, updatedAt, access_token } = response.data.data;
+
+        console.log(response);
+        useUserStore.getState().setUser({
+          id,
+          name,
+          email,
+          isAdmin,
+          createdAt,
+          updatedAt,
+          access_token,
+        });
+        router.push("/admin/dashboard");
         toast({
-          title: error.code,
-          description: error.response.data,
+          title: "Signed In!",
+          description: "Redirecting to dashboard!",
+          variant: "success",
+        });
+      }
+    } catch (error: any) {
+      if (error?.response?.data) {
+        toast({
+          title: error?.response?.data?.error,
+          description: error?.response?.data?.message,
           variant: "destructive",
           action: <ToastAction altText="Try again">Try again</ToastAction>,
         });

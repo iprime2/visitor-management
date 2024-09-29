@@ -4,7 +4,6 @@ import React, { FC, ReactNode, useEffect, useState } from "react";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -30,6 +29,7 @@ import {
 import { useFeedbackModal } from "@/hooks/useFeedbackModal";
 import ClipLoader from "react-spinners/ClipLoader";
 import Link from "next/link";
+import axiosInstance from "@/lib/axioswrapper";
 
 const visitorFormSchema = z.object({
   visitorPrn: z.string(),
@@ -80,25 +80,26 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees, type }) => {
     setLoading(true);
 
     try {
-      const response = await axios.post(`/api/visitors`, data);
-      const responseStatusCode = response.status;
-      if (responseStatusCode === 201) {
+      const response = await axiosInstance.post(`/visitors`, data);
+      console.log(response);
+      // const responseStatusCode = response.status;
+      // if (responseStatusCode === 201) {
         toast({
           description: "Visitor Entry done!",
           variant: "success",
         });
-      }
-      if (responseStatusCode === 200) {
-        toast({
-          description: "Visitor Checked Out!",
-          variant: "success",
-        });
-        const visitorOutId = response.data.id;
-        feedbackModal.onOpen(visitorOutId);
-        sendFeedbackMessage(response.data.mobile, visitorOutId);
-      }
+      // }
+      // if (responseStatusCode === 200) {
+      //   toast({
+      //     description: "Visitor Checked Out!",
+      //     variant: "success",
+      //   });
+      //   const visitorOutId = response.data.id;
+      //   feedbackModal.onOpen(visitorOutId);
+      //   sendFeedbackMessage(response.data.mobile, visitorOutId);
+      // }
       router.refresh();
-      window.location.reload();
+      // window.location.reload();
       resetForm();
     } catch (error: any) {
       console.log(error);
@@ -124,7 +125,7 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees, type }) => {
   const sendFeedbackMessage = async (mobile: string, visitorId: string) => {
     setLoading(true);
     try {
-      await axios.post(`/api/message`, {
+      await axiosInstance.post(`/api/message`, {
         mobile,
         visitorId,
       });

@@ -1,22 +1,46 @@
 "use client";
 
-import { signOut } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { toast } from '@/components/ui/use-toast';
+import useUserStore from '@/stores/useUserStore';
+import { Loader } from "@/components/ui/loader";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from 'react';
 
-const LogoutPage = () => {
+const LogoutButton = () => {
+  const router = useRouter();
+  const { clearUser } = useUserStore();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = () => {
+    setIsLoggingOut(true); // Start the animation
+    setTimeout(() => {
+      clearUser();
+      router.push('/login'); // Redirect to login page after logout
+
+      toast({
+        title: "Logged Out!",
+        description: "You have been logged out successfully.",
+        variant: "success",
+      });
+    }, 2000); // Delay to allow animation to complete
+  };
+
   useEffect(() => {
-    const handleSignOut = async () => {
-      await signOut({ callbackUrl: "/" });
-    };
-
-    handleSignOut();
+    handleLogout();
   }, []);
 
-  if (typeof window !== "undefined") {
-    return <h1>Logging Out!</h1>;
-  }
-
-  return null;
+  return (
+    <div
+      className={`pt-10 flex flex-col items-center justify-center gap-4 w-full h-screen ${
+        isLoggingOut ? "fade-out" : ""
+      }`}
+    >
+      <h1 className='font-bold text-2xl'>
+        Logging out...
+      </h1>
+      <Loader />
+    </div>
+  );
 };
 
-export default LogoutPage;
+export default LogoutButton;

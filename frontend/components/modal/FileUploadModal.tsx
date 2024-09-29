@@ -74,16 +74,16 @@ const FileUploadModal: FC<FileUploadModalProps> = ({}) => {
     setFileData([]);
     try {
       setLoading(true);
-      const res = await axios.get(`/api/files/${visitorId}`);
+      // const res = await axios.get(`/api/files/${visitorId}`);
 
-      if (res.status === 200) {
-        setFileData(res?.data?.files);
-        toast({
-          variant: "success",
-          title: "Documents",
-          description: "Documents fetched successfully",
-        });
-      }
+      // if (res.status === 200) {
+      //   setFileData(res?.data?.files);
+      //   toast({
+      //     variant: "success",
+      //     title: "Documents",
+      //     description: "Documents fetched successfully",
+      //   });
+      // }
     } catch (error: any) {
       console.log(error);
       toast({

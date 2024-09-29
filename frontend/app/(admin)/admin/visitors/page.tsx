@@ -1,23 +1,55 @@
-import { getAttendees } from "@/actions/getAttendees";
-import Error401 from "@/components/401";
+"use client"
+
 import BodyWrapper from "@/components/BodyWrapper";
 import EntryForm from "@/components/EntryForm";
 import Heading from "@/components/Heading";
 import { Separator } from "@/components/ui/separator";
+import { ToastAction } from "@/components/ui/toast";
+import { toast } from "@/components/ui/use-toast";
+import axiosInstance from "@/lib/axioswrapper";
+import useUserStore from "@/stores/useUserStore";
+import { useEffect, useState } from "react";
 
-type attendeeType = {
-  id: string;
-  name: string;
-  createdAt: Date;
-};
+const AdminVisitorsPage = () => {
+  const [loading, setLoading] = useState(false);
+  const [attendees, setAttendees] = useState<any[]>([]);
+  const { user } = useUserStore();
 
-const AdminVisitorsPage = async () => {
-  const attendees: attendeeType[] | string | null | undefined =
-    await getAttendees();
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        setLoading(true);
+        const response = await axiosInstance.get("/attendees");
+        if (response.status === 200) {
+          setAttendees(response.data);
+          // toast({
+          //   title: "Success!",
+          //   description: "Users data fetched!",
+          //   variant: "success",
+          // });
+        }
+      } catch (error: any) {
+        if (error?.response?.data) {
+          toast({
+            title: error?.response?.data?.error,
+            description: error?.response?.data?.message,
+            variant: "destructive",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        } else {
+          toast({
+            description: "Something went wrong!!",
+            variant: "destructive",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  if (attendees === "not authorized") {
-    return <Error401 />;
-  }
+    fetchUsers();
+  }, []);
 
   return (
     <BodyWrapper>

@@ -20,6 +20,7 @@ import { toast } from "./ui/use-toast";
 import { ToastAction } from "./ui/toast";
 import { UserColumnType } from "@/app/(admin)/admin/users/components/columns";
 import { AttendeeColumnType } from "@/app/(admin)/admin/attendees/components/columns";
+import axiosInstance from "@/lib/axioswrapper";
 
 interface CellActionProps {
   data: UserColumnType | AttendeeColumnType;
@@ -53,10 +54,10 @@ const CellAction: FC<CellActionProps> = ({ data, type }) => {
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/${type}/${data.id}`);
+      await axiosInstance.delete(`/${type}/${data.id}`);
       router.refresh();
       toast({
-        description: "Department deleted.",
+        description: `${type} deleted.`,
         variant: "success",
       });
     } catch (error: any) {

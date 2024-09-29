@@ -5,7 +5,6 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Trash } from "lucide-react";
-import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 
 import { toast } from "@/components/ui/use-toast";
@@ -30,6 +29,7 @@ import { UserColumnType } from "../../components/columns";
 import BodyWrapper from "@/components/BodyWrapper";
 import { Switch } from "@/components/ui/switch";
 import { ClipLoader } from "react-spinners";
+import axiosInstance from "@/lib/axioswrapper";
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -69,8 +69,6 @@ const UserForm: FC<UserFormPops> = ({ initialData = null }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { data: session } = useSession();
-
   const form = useForm<UserFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
@@ -91,9 +89,9 @@ const UserForm: FC<UserFormPops> = ({ initialData = null }) => {
 
     try {
       if (initialData) {
-        await axios.patch(`/api/users/${params?.userId}`, data);
+        await axiosInstance.patch(`/users/${params?.userId}`, data);
       } else {
-        await axios.post(`/api/users`, data);
+        await axiosInstance.post(`/users`, data);
       }
       router.refresh();
       router.push("/admin/users");
@@ -125,12 +123,12 @@ const UserForm: FC<UserFormPops> = ({ initialData = null }) => {
   const onDelete = async () => {
     setLoading(true);
     try {
-      await axios.delete(`/api/users/${params?.userId}`);
+      await axiosInstance.delete(`/users/${params?.userId}`);
       router.refresh();
       router.push(`/admin/users`);
       toast({
         description: "User Deleted!",
-        variant: "destructive",
+        variant: "success",
       });
     } catch (error) {
       toast({
