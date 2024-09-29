@@ -1,6 +1,8 @@
 /node_modules
 /frontend/node_modules
 /backend/node_modules
+pnpm-lock.yaml
+/backend
 
 #FE
 # dependencies
@@ -39,7 +41,7 @@
 
 /frontend/.env
 /frontend/next
-/frontendpnpm-lock.yaml
+/frontend/pnpm-lock.yaml
 /frontend/package-lock.json
 
 #BE
