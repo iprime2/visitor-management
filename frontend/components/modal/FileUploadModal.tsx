@@ -161,26 +161,28 @@ const FileUploadModal: FC<FileUploadModalProps> = ({}) => {
     }
   };
 
-  const openFile = async (filePath: string) => {
+  const openFile = async (id: string) => {
     setLoading(true);
 
     try {
-      const response = await axios.get(
-        `files/download/`,
+      const response = await axiosInstance.get(
+        `files/view/${id}`,
         {
-          params: {
-            filePath: filePath,
-          },
           responseType: "blob",
         }
       );
 
-      const file = new Blob([response.data], {
-        type: response.headers["content-type"],
-      });
-      const fileURL = URL.createObjectURL(file);
+      // Get the content type from the response headers (e.g., image/jpeg, application/pdf)
+      const contentType = response.headers['content-type'];
 
-      window.open(fileURL);
+      // Create a new Blob object with the response data and the content type
+      const fileBlob = new Blob([response.data], { type: contentType });
+
+      // Create a URL for the Blob object
+      const fileURL = window.URL.createObjectURL(fileBlob);
+
+      // Open the file in a new tab
+      window.open(fileURL, "_blank", "noopener,noreferrer");
     } catch (error: any) {
       console.log(error);
       if (error.response.data) {
@@ -227,7 +229,7 @@ const FileUploadModal: FC<FileUploadModalProps> = ({}) => {
     }
   };
 
-  const downloadFile = async (id: string) => {
+  const downloadFile = async (id: string, fileName: string) => {
     try {
       const response = await axiosInstance.get(
         `files/download/${id}`,
@@ -236,14 +238,38 @@ const FileUploadModal: FC<FileUploadModalProps> = ({}) => {
         }
       );
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
+       // Extract the file name from the Content-Disposition header (if provided by backend)
+      const contentDisposition = response.headers['content-disposition'];
+      // let fileName = fileName; // Fallback name if Content-Disposition header isn't set
+      if (contentDisposition && contentDisposition.includes('filename=')) {
+        const matches = contentDisposition.match(/filename="(.+)"/);
+        if (matches && matches.length === 2) {
+          fileName = matches[1];
+        }
+      }
+
+      // Create a URL for the blob and trigger the download
+      const blob = new Blob([response.data]);
+      const url = window.URL.createObjectURL(blob);
+
+      // Create an anchor element to trigger download
+      const link = document.createElement('a');
       link.href = url;
-      link.setAttribute("download", "file_name_here");
+      link.setAttribute('download', fileName); // Download file with the correct name
       document.body.appendChild(link);
       link.click();
+
+      // Cleanup: Remove the link and URL after download
+      link.parentNode?.removeChild(link);
+      window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error(error);
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: `There was a problem with your request.`,
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      }); 
     }
   };
 
@@ -315,7 +341,7 @@ const FileUploadModal: FC<FileUploadModalProps> = ({}) => {
                       <EyeIcon
                         onClick={(
                           e: React.MouseEvent<SVGSVGElement, MouseEvent>
-                        ) => openFile(item.filePath)}
+                        ) => openFile(item.id)}
                         className="hover:cursor-pointer text-sm text-slate-600 hover:text-fuchsia-700"
                       />
                     </TooltipTrigger>
@@ -328,7 +354,7 @@ const FileUploadModal: FC<FileUploadModalProps> = ({}) => {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <ArrowDownToLineIcon
-                        onClick={() => downloadFile(item.id)}
+                        onClick={() => downloadFile(item.id, item.fileName)}
                         className="hover:cursor-pointer text-sm text-slate-600 hover:text-violet-600"
                       />
                     </TooltipTrigger>

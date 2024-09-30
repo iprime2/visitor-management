@@ -114,30 +114,47 @@ export class FilesService {
   }
 
   // Handle file download
-  async downloadFile(id: string): Promise<string> {
-    const file = await this.prisma.files.findUnique({where:{id}});
+  async downloadFile(id: string): Promise<any> {
+    // Find the file record from the database by ID
+    const file = await this.prisma.files.findUnique({
+        where: { id },
+    });
 
-    if(!file){
+    if (!file) {
         throw new NotFoundException('File not found');
     }
 
-    const filePath = this.getFilePath(file?.fileName);
-
-    if (!existsSync(filePath)) {
-      throw new NotFoundException('File not found');
+    // Check if the file path exists on the server
+    if (!existsSync(file.filePath)) {
+        throw new NotFoundException('File not found on server');
     }
 
-    return filePath;
+    // Return both the file path and the original file name for downloading
+    return { filePath: file.filePath, fileName: file.fileName };
   }
 
-  // Handle file viewing
-  async viewFile(filename: string): Promise<string> {
-    const filePath = this.getFilePath(filename);
+  async viewFile(id: string): Promise<string> {
+    try {
+      // Find the file record from the database by ID
+      const file = await this.prisma.files.findUnique({
+        where: { id },
+      });
 
-    if (!existsSync(filePath)) {
-      throw new NotFoundException('File not found');
+      if (!file) {
+        throw new NotFoundException('File not found');
+      }
+
+      const filePath = file.filePath;
+
+      // Check if file exists
+      if (!existsSync(filePath)) {
+        throw new NotFoundException('File not found on disk');
+      }
+
+      return filePath;
+    } catch (error) {
+      console.error('Error in viewFile service:', error);
+      throw error;
     }
-
-    return filePath;
   }
 }

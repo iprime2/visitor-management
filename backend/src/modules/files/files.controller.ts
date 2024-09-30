@@ -1,98 +1,132 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UploadedFile, UseInterceptors, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UploadedFile, UseInterceptors, Res, InternalServerErrorException } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateFileDto } from './dto/create-file.dto';
 import { UpdateFileDto } from './dto/update-file.dto';
 import { diskStorage } from 'multer';
-import { join } from 'path';
+import { extname, join } from 'path';
 import * as fs from 'fs/promises'; 
 import { Response } from 'express';
+import { createReadStream } from 'fs';
 @Controller('files')
 export class FilesController {
-  constructor(private readonly filesService: FilesService) {}
+    constructor(private readonly filesService: FilesService) {}
 
-  // Create a new file record
-  @Post()
-  @UseInterceptors(FileInterceptor('file'))
-  async create(@Body() createFileDto: CreateFileDto, @UploadedFile() file: Express.Multer.File) {
-    return this.filesService.create(createFileDto, file);
-  }
+    // Create a new file record
+    @Post()
+    @UseInterceptors(FileInterceptor('file'))
+    async create(@Body() createFileDto: CreateFileDto, @UploadedFile() file: Express.Multer.File) {
+        return this.filesService.create(createFileDto, file);
+    }
 
-  // Get all files
-  @Get()
-  async findAll() {
-    return this.filesService.findAll();
-  }
+    // Get all files
+    @Get()
+    async findAll() {
+        return this.filesService.findAll();
+    }
 
-  @Post('upload')
-  @UseInterceptors(
+    @Post('upload')
+    @UseInterceptors(
     FileInterceptor('file', {
-      storage: diskStorage({
+        storage: diskStorage({
         destination: join('uploads'),
         filename: (req, file, cb) => {
-          const tempFileName = `temp-${Date.now()}-${file.originalname}`; // Use a temporary name
-          cb(null, tempFileName);
+            const tempFileName = `temp-${Date.now()}-${file.originalname}`; // Use a temporary name
+            cb(null, tempFileName);
         },
-      }),
+        }),
     }),
-  )
-  async uploadFile(
+    )
+    async uploadFile(
     @UploadedFile() file: Express.Multer.File,
     @Body() createFileDto: CreateFileDto,
-  ) {
-    try {
-      const newFileName = createFileDto.fileName || file.originalname; // Use the filename from DTO or default to original
-      const newFilePath = join('uploads', newFileName);
+    ) {
+        try {
+            // Extract the original file extension using `extname`
+            const fileExtension = extname(file.originalname);
 
-      // Rename the file to the desired name
-      await fs.rename(join('uploads', file.filename), newFilePath);
+            // If the fileName is provided in DTO, use it, otherwise use the original name
+            const newFileName = createFileDto.fileName
+            ? `${createFileDto.fileName}${fileExtension}` // Append the file extension
+            : file.originalname; // Keep the original name if no custom name provided
 
-      // Set the new file path in the DTO
-      createFileDto.filePath = newFilePath;
+            const newFilePath = join('uploads', newFileName);
 
-      // Save file details in the database
-      const savedFile = await this.filesService.saveFileDetails(createFileDto);
+            // Rename the file to the desired name (with the correct extension)
+            await fs.rename(join('uploads', file.filename), newFilePath);
 
-      return { message: 'File uploaded and renamed successfully', savedFile };
-    } catch (error) {
-      console.error('Error saving file details:', error);
-      return { message: 'Error uploading file', error };
+            // Set the new file path in the DTO
+            createFileDto.filePath = newFilePath;
+            createFileDto.fileName = newFileName;
+
+            // Save file details in the database
+            const savedFile = await this.filesService.saveFileDetails(createFileDto);
+
+            return { message: 'File uploaded and renamed successfully', savedFile };
+        } catch (error) {
+            console.error('Error saving file details:', error);
+            return { message: 'Error uploading file', error };
+        }
     }
-  }
 
-  @Get('download/:id')
-  async downloadFile(@Param('id') id: string, @Res() res: Response) {
-    const filePath = await this.filesService.downloadFile(id);
-    return res.download(filePath);
-  }
+    @Get('download/:id')
+    async downloadFile(@Param('id') id: string, @Res() res: Response) {
+        try {
+            const { filePath, fileName } = await this.filesService.downloadFile(id);
+      
+            // Set headers to prompt download
+            res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+            res.setHeader('Content-Type', 'application/octet-stream');
+      
+            // Create a readable stream and pipe it to the response
+            const fileStream = createReadStream(filePath);
+            fileStream.pipe(res);
+        } catch (error) {
+            console.error('Error downloading file:', error);
+            res.status(404).send({ message: 'File not found' });
+        }
+    }
 
-  @Get('view/:filename')
-  async viewFile(@Param('filename') filename: string, @Res() res: Response) {
-    const filePath = await this.filesService.viewFile(filename);
-    return res.sendFile(filePath);
-  }
+    @Get('view/:id')
+    async viewFile(@Param('id') id: string, @Res() res: Response) {
+        try {
+            // Get the file path from the service
+            const filePath = await this.filesService.viewFile(id);
 
-  // Get file for visitors
-  @Get('/visitors/:visitorId')
-  async findVisitorFile(@Param('visitorId') visitorId: string) {
-    return this.filesService.findVisitorFiles(visitorId);
-  }
+            // Send the file if the path exists
+            return res.sendFile(filePath, { root: '.' }, (err) => {
+                if (err) {
+                console.error('Error sending file:', err);
+                throw new InternalServerErrorException('Error sending file');
+                }
+            });
+        } catch (error) {
+            console.error('Error in viewFile controller:', error);
+            throw new InternalServerErrorException('Could not retrieve file');
+        }
+    }
 
-  // Get file by ID
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.filesService.findOne(id);
-  }
+    // Get file for visitors
+    @Get('/visitors/:visitorId')
+    async findVisitorFile(@Param('visitorId') visitorId: string) {
+        return this.filesService.findVisitorFiles(visitorId);
+    }
 
-  // Update file record
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateFileDto: UpdateFileDto) {
-    return this.filesService.update(id, updateFileDto);
-  }
+    // Get file by ID
+    @Get(':id')
+    async findOne(@Param('id') id: string) {
+        return this.filesService.findOne(id);
+    }
 
-  // Delete file
-  @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return this.filesService.remove(id);
-  }
+    // Update file record
+    @Patch(':id')
+    async update(@Param('id') id: string, @Body() updateFileDto: UpdateFileDto) {
+        return this.filesService.update(id, updateFileDto);
+    }
+
+    // Delete file
+    @Delete(':id')
+    async remove(@Param('id') id: string) {
+        return this.filesService.remove(id);
+    }
 }
