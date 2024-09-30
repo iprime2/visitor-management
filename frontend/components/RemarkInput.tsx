@@ -11,6 +11,7 @@ import { toast } from "./ui/use-toast";
 import { ToastAction } from "./ui/toast";
 import { useRouter } from "next/navigation";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/form";
+import axiosInstance from "@/lib/axioswrapper";
 
 type RemarkInputProps = {
   visitorId: string;
@@ -42,13 +43,8 @@ const RemarkInput: FC<RemarkInputProps> = ({
   const onSubmit = async (data: RemarkFormValues) => {
     setLoading(true);
 
-    const finalData = {
-      visitorId: visitorId,
-      remark: data.remark,
-    };
-
     try {
-      await axios.post(`/api/visitors/remark`, finalData);
+      await axiosInstance.patch(`/visitors/remark/${visitorId}`, {remark: data.remark});
       toast({
         description: "Remark Saved!",
         variant: "success",
@@ -57,11 +53,11 @@ const RemarkInput: FC<RemarkInputProps> = ({
       router.refresh();
       fetchData();
     } catch (error: any) {
-      console.log(error);
+      console.log("Update_remark",error);
       if (error.response.data) {
-        const errMessage = error?.response?.data;
         toast({
-          description: errMessage,
+          title: error?.response?.data?.error,
+          description: error?.response?.data?.message,
           variant: "destructive",
           action: <ToastAction altText="Try again">Try again</ToastAction>,
         });

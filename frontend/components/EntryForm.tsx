@@ -35,7 +35,7 @@ const visitorFormSchema = z.object({
   visitorPrn: z.string(),
   visitorName: z.string(),
   mobile: z.string(),
-  attendedBy: z.string(),
+  attendeeId: z.string(),
   query: z.string(),
 });
 
@@ -67,7 +67,7 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees, type }) => {
       visitorPrn: "",
       visitorName: "",
       mobile: "",
-      attendedBy: "",
+      attendeeId: "",
       query: "",
     },
   });
@@ -80,33 +80,30 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees, type }) => {
     setLoading(true);
 
     try {
+      console.log(data);
       const response = await axiosInstance.post(`/visitors`, data);
       console.log(response);
       // const responseStatusCode = response.status;
-      // if (responseStatusCode === 201) {
+      if (response.status === 201) {
         toast({
           description: "Visitor Entry done!",
           variant: "success",
         });
-      // }
-      // if (responseStatusCode === 200) {
-      //   toast({
-      //     description: "Visitor Checked Out!",
-      //     variant: "success",
-      //   });
-      //   const visitorOutId = response.data.id;
-      //   feedbackModal.onOpen(visitorOutId);
-      //   sendFeedbackMessage(response.data.mobile, visitorOutId);
-      // }
+      }else {
+        toast({
+          description: "Something went wrong! Visitor Entry not Done!",
+          variant: "destructive",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      }
       router.refresh();
-      // window.location.reload();
       resetForm();
     } catch (error: any) {
       console.log(error);
       if (error.response.data) {
-        const errMessage = error?.response?.data;
         toast({
-          description: errMessage,
+          title: error.response.data.error,
+          description: error.response.data.message,
           variant: "destructive",
           action: <ToastAction altText="Try again">Try again</ToastAction>,
         });
@@ -155,7 +152,7 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees, type }) => {
       visitorPrn: "",
       visitorName: "",
       mobile: "",
-      attendedBy: "",
+      attendeeId: "",
       query: "",
     });
   };
@@ -268,7 +265,7 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees, type }) => {
               )}
               <FormField
                 control={form.control}
-                name="attendedBy"
+                name="attendeeId"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Whom you want to Meet?</FormLabel>
@@ -293,7 +290,7 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees, type }) => {
                             }) => (
                               <SelectItem
                                 key={attendee.id}
-                                value={attendee.name}
+                                value={attendee.id}
                               >
                                 {attendee.name}
                               </SelectItem>

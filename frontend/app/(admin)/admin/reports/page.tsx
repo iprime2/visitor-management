@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/select";
 import { FormDescription } from "@/components/ui/form";
 import { useFileUploadModal } from "@/hooks/useFileUploadModal";
+import axiosInstance from "@/lib/axioswrapper";
 
 type rowSelectionType = {
   [key: number]: boolean;
@@ -56,8 +57,6 @@ const ReportsPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log(process.env.UPLOAD_API_URL);
-
   const fetchData = async () => {
     setLoading(true);
     const fromDate = startOfDay(date.from).toISOString();
@@ -70,7 +69,8 @@ const ReportsPage = () => {
       statusType,
     };
     try {
-      const res = await axios.post(`/api/reports`, finalDate);
+      const res = await axiosInstance.post(`/visitors/search`, finalDate);
+      console.log(res);
       setVisitors(res.data);
       toast({
         description: "Data Fetched",
@@ -125,23 +125,27 @@ const ReportsPage = () => {
 
   const updateClosed = async (rowSelection: rowSelectionType) => {
     setLoading(true);
+    const fromDate = startOfDay(date.from).toISOString();
+    const toDate = date.to && endOfDay(date.to).toISOString();
 
     try {
       let response;
       if (Object.keys(rowSelection)?.length > 0) {
-        let closeVisitorId = [];
+        let closeVisitorIds = [];
         for (const key in rowSelection) {
           if (Object.prototype.hasOwnProperty.call(rowSelection, key)) {
             if (key) {
-              closeVisitorId.push(visitors[key].id);
+              closeVisitorIds.push(visitors[key].id);
             }
           }
         }
-        response = await axios.post(`/api/visitors/closedSome`, {
-          closeVisitorId,
+        response = await axiosInstance.patch(`/visitors/closesome`, {
+          closeVisitorIds,
+          fromDate, 
+          toDate
         });
       } else {
-        response = await axios.post(`/api/visitors/closed`);
+        response = await axiosInstance.patch(`/visitors/closeall`, {fromDate, toDate});
       }
 
       if (response?.status === 200) {

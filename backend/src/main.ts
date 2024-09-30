@@ -1,11 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { JwtAuthGuard } from './utils/jwt-auth.guard';
+import { join } from 'path';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
+  // Use NestExpressApplication instead of INestApplication
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // Enable CORS with specific options
   app.enableCors({
@@ -24,6 +25,8 @@ async function bootstrap() {
 
   // Set the global prefix for all routes
   app.setGlobalPrefix('api');  
+
+  app.useStaticAssets(join(__dirname, '..', 'uploads'));
 
    // Get the port from the .env file, or fallback to 3000 if it's not defined
    const port = process.env.PORT || 3022;

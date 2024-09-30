@@ -30,6 +30,7 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import { Separator } from "../ui/separator";
+import axiosInstance from "@/lib/axioswrapper";
 
 interface FileUploadModalProps {}
 
@@ -67,6 +68,7 @@ const FileUploadModal: FC<FileUploadModalProps> = ({}) => {
     resolver: zodResolver(fileUploadFormSchema),
     defaultValues: {
       file: "",
+      name: "",
     },
   });
 
@@ -74,16 +76,17 @@ const FileUploadModal: FC<FileUploadModalProps> = ({}) => {
     setFileData([]);
     try {
       setLoading(true);
-      // const res = await axios.get(`/api/files/${visitorId}`);
+      const res = await axiosInstance.get(`/files/visitors/${visitorId}`);
+      console.log(res);
 
-      // if (res.status === 200) {
-      //   setFileData(res?.data?.files);
-      //   toast({
-      //     variant: "success",
-      //     title: "Documents",
-      //     description: "Documents fetched successfully",
-      //   });
-      // }
+      if (res.status === 200) {
+        setFileData(res?.data);
+        toast({
+          variant: "success",
+          title: "Documents",
+          description: "Documents fetched successfully",
+        });
+      }
     } catch (error: any) {
       console.log(error);
       toast({
@@ -111,15 +114,13 @@ const FileUploadModal: FC<FileUploadModalProps> = ({}) => {
 
   const onSubmit = async (data: FileUploadFormValues) => {
     const formData = new FormData();
-    formData.append(
-      "file",
-      data.file,
-      data.name + "." + data.file.name.split(".").pop()
-    );
+    formData.append('file', data.file);
+    formData.append('fileName', data.name); 
+    formData.append('visitorId', visitorId as string);
     try {
       setLoading(true);
-      const res = await axios.post(
-        `https://visitor-file-upload.onrender.com/upload/${visitorId}`,
+      const res = await axiosInstance.post(
+        `/files/upload`,
         formData,
         {
           headers: {
@@ -128,30 +129,24 @@ const FileUploadModal: FC<FileUploadModalProps> = ({}) => {
         }
       );
 
-      if (res.status === 200) {
-        const filePathResponse = await axios.post(`/api/files/${visitorId}`, {
-          filePath: res.data.fullPath,
-          fileName: res.data.fileName,
+      if (res.status === 201) {
+        toast({
+          variant: "success",
+          title: "File Uploaded!",
+          description: res.data.message
         });
-        if (filePathResponse.status === 200) {
-          toast({
-            variant: "success",
-            title: "File Uploaded!",
-          });
-          form.reset();
+        form.reset();
+        setTimeout(() => {
           fetchData();
-          // fileUploadModal.onClose();
-        }
+        }, 3000);
       }
     } catch (error: any) {
-      console.log(error);
+      console.log("File_Upload_Error:",error);
       if (error.response) {
-        const errMessage = error?.response?.data;
-        console.log(errMessage);
         toast({
           variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description: errMessage,
+          title: "Error",
+          description: error?.response?.data.message,
         });
       } else {
         toast({
@@ -171,7 +166,7 @@ const FileUploadModal: FC<FileUploadModalProps> = ({}) => {
 
     try {
       const response = await axios.get(
-        `https://visitor-file-upload.onrender.com/download`,
+        `files/download/`,
         {
           params: {
             filePath: filePath,
@@ -188,13 +183,11 @@ const FileUploadModal: FC<FileUploadModalProps> = ({}) => {
       window.open(fileURL);
     } catch (error: any) {
       console.log(error);
-      if (error.response) {
-        const errMessage = error?.response?.data;
-        console.log(errMessage);
+      if (error.response.data) {
         toast({
           variant: "destructive",
           title: "Uh oh! Something went wrong.",
-          description: errMessage,
+          description: error?.response?.data?.message,
         });
       } else {
         toast({
@@ -212,26 +205,14 @@ const FileUploadModal: FC<FileUploadModalProps> = ({}) => {
   const deleteFile = async (filePath: string, fileName: string, id: string) => {
     setLoading(true);
     try {
-      const response = await axios.delete(
-        `https://visitor-file-upload.onrender.com/delete`,
-        {
-          params: {
-            filePath,
-            visitorId,
-          },
-        }
-      );
+      const response = await axiosInstance.delete(`/files/${id}`);
 
       if (response.status === 200) {
-        const filePathDeleteResponse = await axios.delete(`/api/files/${id}`);
-
-        if (filePathDeleteResponse.status === 200) {
-          toast({
-            variant: "success",
-            title: "File Deleted!",
-            description: `File ${fileName} deleted successfully`,
-          });
-        }
+        toast({
+          variant: "success",
+          title: "File Deleted!",
+          description: `File ${fileName} deleted successfully`,
+        });
         fetchData();
       }
     } catch (error) {
@@ -246,14 +227,11 @@ const FileUploadModal: FC<FileUploadModalProps> = ({}) => {
     }
   };
 
-  const downloadFile = async (filePath: string) => {
+  const downloadFile = async (id: string) => {
     try {
-      const response = await axios.get(
-        `https://visitor-file-upload.onrender.com/download`,
+      const response = await axiosInstance.get(
+        `files/download/${id}`,
         {
-          params: {
-            filePath: filePath,
-          },
           responseType: "blob",
         }
       );
@@ -350,7 +328,7 @@ const FileUploadModal: FC<FileUploadModalProps> = ({}) => {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <ArrowDownToLineIcon
-                        onClick={() => downloadFile(item.filePath)}
+                        onClick={() => downloadFile(item.id)}
                         className="hover:cursor-pointer text-sm text-slate-600 hover:text-violet-600"
                       />
                     </TooltipTrigger>

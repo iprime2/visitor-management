@@ -1,7 +1,7 @@
 "use client";
 
 import { FC, useCallback, useEffect, useState } from "react";
-import axios from "axios";
+import { ClipLoader } from "react-spinners";
 
 import {
   Select,
@@ -12,7 +12,7 @@ import {
 } from "./ui/select";
 import { toast } from "./ui/use-toast";
 import { ToastAction } from "./ui/toast";
-import { ClipLoader } from "react-spinners";
+import axiosInstance from "@/lib/axioswrapper";
 
 type Attendee = {
   id: number;
@@ -51,24 +51,15 @@ const SelectAttendee: FC<SelectAttendeeTypeProps> = ({
     setLoading(true);
 
     try {
-      const response = await axios.get("/api/attendees");
+      const response = await axiosInstance.get("/attendees");
       setAttendees(response.data);
     } catch (error: any) {
-      console.log(error);
-      if (error.response.data) {
-        const errMessage = error?.response?.data;
-        toast({
-          description: errMessage,
-          variant: "destructive",
-          action: <ToastAction altText="Try again">Try again</ToastAction>,
-        });
-      } else {
-        toast({
-          description: "Something went wrong!!",
-          variant: "destructive",
-          action: <ToastAction altText="Try again">Try again</ToastAction>,
-        });
-      }
+      console.log("Attendee_Error_SELECT", error);      
+      toast({
+        description: "Something went wrong!!",
+        variant: "destructive",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
     } finally {
       setLoading(false);
     }
@@ -78,8 +69,8 @@ const SelectAttendee: FC<SelectAttendeeTypeProps> = ({
     setLoading(true);
     const finalData = { name: data };
     try {
-      const res = await axios.patch(
-        `/api/updateAttendee/${visitorUniqueId}`,
+      const res = await axiosInstance.patch(
+        `/visitors/updateattendee/${visitorUniqueId}`,
         finalData
       );
       toast({
@@ -87,13 +78,12 @@ const SelectAttendee: FC<SelectAttendeeTypeProps> = ({
         variant: "success",
       });
       setAttendeeSelectedValue(res.data.attendedBy as string);
-      console.log(res);
     } catch (error: any) {
       console.log(error);
       if (error.response.data) {
-        const errMessage = error?.response?.data;
         toast({
-          description: errMessage,
+          title: error?.response?.data?.error,
+          description: error?.response?.data?.message,
           variant: "destructive",
           action: <ToastAction altText="Try again">Try again</ToastAction>,
         });

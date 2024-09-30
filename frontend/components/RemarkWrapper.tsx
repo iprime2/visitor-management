@@ -1,8 +1,9 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
-import axios from "axios";
-import RemarkInput from "./RemarkInput";
 import { ClipLoader } from "react-spinners";
 import { PencilIcon } from "lucide-react";
+
+import RemarkInput from "./RemarkInput";
+import axiosInstance from "@/lib/axioswrapper";
 
 type RemarkWrapperProps = {
   visitorId: string;
@@ -24,7 +25,7 @@ const RemarkWrapper: FC<RemarkWrapperProps> = ({ visitorId }) => {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`/api/visitors/remark/${visitorId}`);
+      const res = await axiosInstance.get(`/visitors/remark/${visitorId}`);
       setInitialData(res.data);
     } catch (error: any) {
       console.log(error);

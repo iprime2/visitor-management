@@ -2,48 +2,22 @@ import { IsString, IsNotEmpty, IsOptional, IsBoolean, IsDateString } from 'class
 
 export class CreateVisitorDto {
   @IsString()
-  @IsNotEmpty()
-  visitorName: string;
+  @IsOptional()
+  visitorName?: string | null;
 
   @IsString()
   @IsOptional()
   visitorPrn?: string;
 
   @IsString()
-  @IsNotEmpty()
-  mobile: string;
+  @IsOptional()
+  mobile?: string;
 
   @IsString()
   @IsNotEmpty()
-  type: string;
-
-  @IsString()
-  @IsNotEmpty()
-  attendedBy: string;
-
-  @IsString()
   attendeeId: string;
 
   @IsString()
+  @IsNotEmpty()
   query: string;
-
-  @IsString()
-  @IsOptional()
-  status?: string;
-
-  @IsBoolean()
-  @IsOptional()
-  in?: boolean;
-
-  @IsBoolean()
-  @IsOptional()
-  out?: boolean;
-
-  @IsDateString()
-  @IsOptional()
-  inTime?: Date;
-
-  @IsDateString()
-  @IsOptional()
-  outTime?: Date;
 }

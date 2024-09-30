@@ -36,6 +36,7 @@
     "formidable": "^3.5.1",
     "ioredis": "^5.3.2",
     "js-cookie": "^3.0.5",
+    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.315.0",
     "multer": "^1.4.5-lts.1",
     "net": "^1.0.2",
@@ -60,6 +61,7 @@
   "devDependencies": {
     "@types/formidable": "^3.4.5",
     "@types/js-cookie": "^3.0.6",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/multer": "^1.4.11",
     "@types/node": "^20",
     "@types/node-cron": "^3.0.11",
