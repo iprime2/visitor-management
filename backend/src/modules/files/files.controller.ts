@@ -69,6 +69,7 @@ export class FilesController {
         }
     }
 
+    // to download visitor files
     @Get('download/:id')
     async downloadFile(@Param('id') id: string, @Res() res: Response) {
         try {
@@ -87,6 +88,7 @@ export class FilesController {
         }
     }
 
+    // to view visitor files
     @Get('view/:id')
     async viewFile(@Param('id') id: string, @Res() res: Response) {
         try {

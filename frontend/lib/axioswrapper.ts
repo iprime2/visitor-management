@@ -3,7 +3,8 @@ import Cookies from 'js-cookie'; // Import js-cookie to retrieve token from cook
 
 // Create an Axios instance
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:3011/api',
+  // baseURL: 'http://localhost:3011/api', // localhost
+  baseURL: 'https://visitor-management-k03j.onrender.com/api',
   headers: {
     'Content-Type': 'application/json',
   },
