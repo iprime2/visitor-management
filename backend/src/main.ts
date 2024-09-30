@@ -10,7 +10,7 @@ async function bootstrap() {
 
   // Enable CORS with specific options
   app.enableCors({
-    origin: ['http://localhost:3000', 'https://visitor-management-hazel.vercel.app'], // Allow requests from this origin
+    origin: ['http://localhost:3000', 'http://localhost:3001', 'https://visitor-management-hazel.vercel.app'], // Allow requests from this origin
     credentials: true,               // Allow sending cookies (if needed)
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Authorization',

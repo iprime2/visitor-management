@@ -1,14 +1,25 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, HttpCode, HttpStatus, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, HttpCode, HttpStatus, Query, OnApplicationBootstrap } from '@nestjs/common';
 import { CreateVisitorDto } from './dto/create-visitor.dto';
-import { UpdateVisitorDto } from './dto/update-visitor.dto';
 import { VisitorsService } from './visitors.service';
+import { CronJobManager } from 'src/managers/cronjob-manager';
 
 @Controller('visitors')
-export class VisitorsController {
+export class VisitorsController extends CronJobManager implements OnApplicationBootstrap {
   constructor(
     @Inject(VisitorsService) private readonly visitorService: VisitorsService
-) {}
+  ) {
+    super();
+  }
 
+  onApplicationBootstrap() {
+    this.createCronJob(
+      "visitor-status-closed",
+      "*/5 * * * *",
+      async () => {
+        await this.visitorService.updateVisitorStatus();
+      }
+    )
+  }
 
   // Create a new visitor
   @Post()

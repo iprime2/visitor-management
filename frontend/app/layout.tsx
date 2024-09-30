@@ -6,7 +6,6 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import Provider from "@/providers/Provider";
 import FeedbackModal from "@/components/modal/FeedbackModal";
-import { updateOutTime } from "@/lib/updateOutTimeCornJob";
 import FileUploadModal from "@/components/modal/FileUploadModal";
 
 const roboto = Roboto({
@@ -18,10 +17,6 @@ export const metadata: Metadata = {
   title: "Visitor Management",
   description: "This is a visitor management application",
 };
-
-cron.schedule("*/5 * * * *", () => {
-  updateOutTime();
-});
 
 export default function RootLayout({
   children,

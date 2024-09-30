@@ -30,6 +30,7 @@ interface DataTableProps<TData, TValue> {
   updateClosed?: (rowSelection: any) => void;
   downloadDataFn?: () => void;
   loading?: boolean;
+  rightVisible?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -39,6 +40,7 @@ export function DataTable<TData, TValue>({
   updateClosed,
   downloadDataFn,
   loading,
+  rightVisible = false,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
@@ -78,22 +80,24 @@ export function DataTable<TData, TValue>({
           }
           className="md:max-w-sm sm:w-full"
         />
-        <div className="flex gap-2 md:w-[30%] lg:w-md w-full">
-          <Button
-            className="w-full"
-            disabled={loading}
-            onClick={() => updateClosed && updateClosed(rowSelection)}
-          >
-            Close All
-          </Button>
-          <Button
-            className="w-full"
-            onClick={() => downloadDataFn && downloadDataFn()}
-            disabled={loading}
-          >
-            Download
-          </Button>
-        </div>
+        {rightVisible && (
+          <div className="flex gap-2 md:w-[30%] lg:w-md w-full">
+            <Button
+              className="w-full"
+              disabled={loading}
+              onClick={() => updateClosed && updateClosed(rowSelection)}
+            >
+              Close All
+            </Button>
+            <Button
+              className="w-full"
+              onClick={() => downloadDataFn && downloadDataFn()}
+              disabled={loading}
+            >
+              Download
+            </Button>
+          </div>
+        )}
       </div>
       <div className="rounded-md border">
         <Table>

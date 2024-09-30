@@ -249,6 +249,7 @@ const ReportsPage = () => {
             updateClosed={updateClosed}
             downloadDataFn={downloadDataFn}
             loading={loading}
+            rightVisible={true}
           />
         ) : (
           <h3>Select The Date!!</h3>

@@ -10,6 +10,12 @@ export class VisitorsService {
   async create(createVisitorDto: CreateVisitorDto) {
     const { visitorPrn, visitorName, mobile, attendeeId, query } = createVisitorDto;
 
+    const attendee = await this.prisma.attendee.findUnique({where:{id:attendeeId}});
+
+    if(!attendee){
+      throw new BadRequestException("Attendee doesn't exists");
+    }
+
     // Check if the visitor is already checked in using PRN
     if (visitorPrn) {
       const member = await this.prisma.members.findFirst({
@@ -22,11 +28,7 @@ export class VisitorsService {
         throw new BadRequestException("PRN doesn't exists");
       }
 
-      const attendee = await this.prisma.attendee.findUnique({where:{id:attendeeId}});
-
-      if(!attendee){
-        throw new BadRequestException("Attendee doesn't exists");
-      }
+      
 
       return await this.prisma.visitors.create({
         data: {
@@ -52,7 +54,7 @@ export class VisitorsService {
           visitorName,
           mobile: mobile || "",
           type: 'visitor',
-          attendedBy: "",
+          attendedBy: attendee.name,
           attendeeId: attendeeId,
           query,
           status: 'open',
@@ -199,6 +201,22 @@ export class VisitorsService {
     }
 
     return visitor;
+  }
+
+  // update visitor status to closed after certain time
+  async updateVisitorStatus(){
+    await this.prisma.visitors.updateMany({
+      where:{
+        status : {
+          not: "closed"
+        }
+      },
+      data:{
+        status: "closed",
+        out: true,
+        outTime: new Date(),
+      }
+    })
   }
 
   // Update a visitor by ID
