@@ -54,10 +54,10 @@ model Visitors {
   visitorPrn  String?
   mobile      String
   type        String
-  attendedBy  String
+  attendedBy  String?
   attendeeId  String
   attendee    Attendee  @relation("visitorToAttendee", fields: [attendeeId], references: [id])
-  query       String
+  query       String?
   status      String    @default("open")
   remark      String?
   in          Boolean   @default(true)

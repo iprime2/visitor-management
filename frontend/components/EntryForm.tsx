@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC, ReactNode, useEffect, useState } from "react";
+import React, { FC, ReactNode, useEffect, useRef, useState } from "react";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -56,11 +56,7 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees, type }) => {
   const feedbackModal = useFeedbackModal();
   const [mounted, setMounted] = useState<boolean>(false);
   const [visitorType, setVisitorType] = useState<string | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
+  
   const form = useForm<VisitorsFormValues>({
     resolver: zodResolver(visitorFormSchema),
     defaultValues: {
@@ -71,6 +67,15 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees, type }) => {
       query: "",
     },
   });
+
+  const { setFocus } = form;
+
+  useEffect(() => {
+    setMounted(true);
+    setFocus("visitorPrn");
+  }, [setFocus]);
+
+
 
   if (!mounted) {
     return null;
@@ -188,14 +193,13 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees, type }) => {
           </Button>
         </div>
       </div>
-      {visitorType ? (
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
             className="w-full h-auto flex flex-col gap-4"
           >
             <div className="sm:flex sm:flex-col md:grid md:grid-cols-2 md:gap-2">
-              {visitorType === "studentEmployee" && (
+              {true && (
                 <FormField
                   // className="transition-all duration-100 ease-in-out"
                   control={form.control}
@@ -205,9 +209,9 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees, type }) => {
                       <FormLabel>Student PRN/ Employee ID</FormLabel>
                       <FormControl>
                         <Input
-                          className="focus"
                           disabled={loading}
                           placeholder={"Enter Student PRN number / Employee ID"}
+                          tabIndex={0} 
                           {...field}
                         />
                       </FormControl>
@@ -350,11 +354,6 @@ const EntryForm: FC<EntryFormPropsType> = ({ attendees, type }) => {
             </div>
           </form>
         </Form>
-      ) : (
-        <h2 className="sm:text-lg md:text-2xl mt-20 flex w-full item-center justify-center from-neutral-600">
-          Please choose the type of visitor.
-        </h2>
-      )}
     </div>
   );
 };

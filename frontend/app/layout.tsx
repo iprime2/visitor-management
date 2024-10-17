@@ -5,8 +5,6 @@ import cron from "node-cron";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import Provider from "@/providers/Provider";
-import FeedbackModal from "@/components/modal/FeedbackModal";
-import FileUploadModal from "@/components/modal/FileUploadModal";
 
 const roboto = Roboto({
   weight: "400",
@@ -27,8 +25,6 @@ export default function RootLayout({
     <html lang="en">
       <Provider>
         <Toaster />
-        <FeedbackModal />
-        <FileUploadModal />
         <body className={roboto.className}>{children}</body>
       </Provider>
     </html>

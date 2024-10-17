@@ -12,9 +12,9 @@ export class VisitorsService {
 
     const attendee = await this.prisma.attendee.findUnique({where:{id:attendeeId}});
 
-    if(!attendee){
-      throw new BadRequestException("Attendee doesn't exists");
-    }
+    // if(!attendee){
+    //   throw new BadRequestException("Attendee doesn't exists");
+    // }
 
     // Check if the visitor is already checked in using PRN
     if (visitorPrn) {
@@ -37,8 +37,8 @@ export class VisitorsService {
           visitorName: member.name,
           mobile: member.mobile,
           type: member.type,
-          attendedBy: attendee.name,
-          attendeeId: attendeeId,
+          attendedBy: attendee?.name  || "NAN",
+          attendeeId: attendeeId || "",
           query,
           status: 'open',
           remark: '',
@@ -54,8 +54,8 @@ export class VisitorsService {
           visitorName,
           mobile: mobile || "",
           type: 'visitor',
-          attendedBy: attendee.name,
-          attendeeId: attendeeId,
+          attendedBy: attendee?.name || "NAN",
+          attendeeId: attendeeId || "",
           query,
           status: 'open',
           remark: '',

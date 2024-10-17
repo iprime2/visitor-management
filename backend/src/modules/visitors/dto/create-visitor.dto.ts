@@ -12,12 +12,14 @@ export class CreateVisitorDto {
   @IsString()
   @IsOptional()
   mobile?: string;
-
+  
   @IsString()
-  @IsNotEmpty()
-  attendeeId: string;
-
+  @IsOptional()
+  // @IsNotEmpty()
+  attendeeId?: string;
+  
   @IsString()
-  @IsNotEmpty()
-  query: string;
+  @IsOptional()
+  // @IsNotEmpty()
+  query?: string;
 }
