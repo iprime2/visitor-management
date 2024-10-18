@@ -55,8 +55,8 @@ model Visitors {
   mobile      String
   type        String
   attendedBy  String?
-  attendeeId  String
-  attendee    Attendee  @relation("visitorToAttendee", fields: [attendeeId], references: [id])
+  attendeeId  String?
+  attendee    Attendee?  @relation("visitorToAttendee", fields: [attendeeId], references: [id])
   query       String?
   status      String    @default("open")
   remark      String?

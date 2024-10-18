@@ -3,9 +3,9 @@ import { AttendeeService } from './attendee.service';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
 import { JwtAuthGuard } from 'src/utils/jwt-auth.guard';
+import { Public } from 'src/utils/public.decorator';
 
 @Controller('attendees')
-@UseGuards(JwtAuthGuard)
 export class AttendeeController {
   constructor(private readonly attendeeService: AttendeeService) {}
 
@@ -17,12 +17,14 @@ export class AttendeeController {
 
   // Get all attendees
   @Get()
+  @Public() 
   async findAll() {
     return this.attendeeService.findAll();
   }
 
   // Get a single attendee by ID
   @Get(':id')
+  @Public() 
   async findOne(@Param('id') id: string) {
     return this.attendeeService.findOne(id);
   }

@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, HttpCode, Ht
 import { CreateVisitorDto } from './dto/create-visitor.dto';
 import { VisitorsService } from './visitors.service';
 import { CronJobManager } from 'src/managers/cronjob-manager';
+import { Public } from 'src/utils/public.decorator';
 
 @Controller('visitors')
 export class VisitorsController extends CronJobManager implements OnApplicationBootstrap {
@@ -23,6 +24,7 @@ export class VisitorsController extends CronJobManager implements OnApplicationB
 
   // Create a new visitor
   @Post()
+  @Public() 
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createVisitorDto: CreateVisitorDto) {
     return await this.visitorService.create(createVisitorDto);

@@ -20,11 +20,11 @@ const VisitorsPage = async () => {
         const response = await axiosInstance.get("/attendees");
         if (response.status === 200) {
           setAttendees(response.data);
-          // toast({
-          //   title: "Success!",
-          //   description: "Attendees data fetched!",
-          //   variant: "success",
-          // });
+          toast({
+            title: "Success!",
+            description: "Attendees data fetched!",
+            variant: "success",
+          });
         }
       } catch (error: any) {
         if (error?.response?.data) {

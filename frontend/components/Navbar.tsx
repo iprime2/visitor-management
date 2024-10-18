@@ -50,7 +50,7 @@ const Navbar: FC<NavbarPropsType> = ({ type }) => {
           type === "public" && "md:mr-[500px]"
         )}
       >
-        <p className="w-full font-bold sm:text-md md:text-2xl lg:text-4xl">
+        <p className="w-full font-bold sm:text-md md:text-xl lg:text-2xl">
           Visitor Management System
         </p>
       </div>

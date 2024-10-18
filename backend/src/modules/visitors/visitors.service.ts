@@ -38,7 +38,7 @@ export class VisitorsService {
           mobile: member.mobile,
           type: member.type,
           attendedBy: attendee?.name  || "NAN",
-          attendeeId: attendeeId || "",
+          attendeeId: attendeeId || null,
           query,
           status: 'open',
           remark: '',
@@ -52,10 +52,10 @@ export class VisitorsService {
       return await this.prisma.visitors.create({
         data: {
           visitorName,
-          mobile: mobile || "",
+          mobile: mobile || '',
           type: 'visitor',
           attendedBy: attendee?.name || "NAN",
-          attendeeId: attendeeId || "",
+          attendeeId: attendeeId || null,
           query,
           status: 'open',
           remark: '',
